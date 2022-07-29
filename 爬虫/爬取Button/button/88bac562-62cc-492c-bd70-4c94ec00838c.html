@@ -1,0 +1,64 @@
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title > Document </title><style >.pSharpTH-itchy-mole-30 .draw-border {
+ box-shadow: inset 0 0 0 4px #58afd1;
+ color: #58afd1;
+ transition: color 0.25s 0.0833333333s;
+ position: relative;
+}
+
+.pSharpTH-itchy-mole-30 .draw-border::before, .pSharpTH-itchy-mole-30 .draw-border::after {
+ border: 0 solid transparent;
+ box-sizing: border-box;
+ content: "";
+ pointer-events: none;
+ position: absolute;
+ width: 0;
+ height: 0;
+ bottom: 0;
+ right: 0;
+}
+
+.pSharpTH-itchy-mole-30 .draw-border::before {
+ border-bottom-width: 4px;
+ border-left-width: 4px;
+}
+
+.pSharpTH-itchy-mole-30 .draw-border::after {
+ border-top-width: 4px;
+ border-right-width: 4px;
+}
+
+.pSharpTH-itchy-mole-30 .draw-border:hover {
+ color: #ffe593;
+}
+
+.pSharpTH-itchy-mole-30 .draw-border:hover::before, .pSharpTH-itchy-mole-30 .draw-border:hover::after {
+ border-color: #ffe593;
+ transition: border-color 0s, width 0.25s, height 0.25s;
+ width: 100%;
+ height: 100%;
+}
+
+.pSharpTH-itchy-mole-30 .draw-border:hover::before {
+ transition-delay: 0s, 0s, 0.25s;
+}
+
+.pSharpTH-itchy-mole-30 .draw-border:hover::after {
+ transition-delay: 0s, 0.25s, 0s;
+}
+
+.pSharpTH-itchy-mole-30 .btn {
+ background: none;
+ border: none;
+ cursor: pointer;
+ line-height: 1.5;
+ font: 700 17px "Roboto Slab", sans-serif;
+ padding: 1em 2em;
+ letter-spacing: 0.05rem;
+}
+
+.pSharpTH-itchy-mole-30 .btn:focus {
+ outline: 2px dotted #55d7dc;
+}
+
+</style></head><body><div class="pSharpTH-itchy-mole-30">
+<button class="btn draw-border">Button</button></div></body></html>

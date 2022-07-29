@@ -1,0 +1,60 @@
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title > Document </title><style >/* Hide the default checkbox */
+.pgagan-gv-unlucky-yak-4 .container input {
+ position: absolute;
+ opacity: 0;
+ cursor: pointer;
+ height: 0;
+ width: 0;
+}
+
+.pgagan-gv-unlucky-yak-4 .container {
+ display: block;
+ position: relative;
+ cursor: pointer;
+ font-size: 25px;
+ user-select: none;
+}
+
+/* Create a custom checkbox */
+.pgagan-gv-unlucky-yak-4 .checkmark {
+ position: relative;
+ top: 0;
+ left: 0;
+ height: 1.3em;
+ width: 1.3em;
+ background-color: #f0f0f0;
+ border-radius: 50px;
+ transition: all 0.7s;
+}
+
+/* When the checkbox is checked, add a blue background */
+.pgagan-gv-unlucky-yak-4 .container input:checked ~ .checkmark {
+ background-color: transparent;
+ box-shadow: -10px -10px 100px 5px #5B51D8, 0 -10px 100px 5px #833AB4, 10px -10px 100px 5px #E1306C, 10px 0 100px 5px #FD1D1D, 10px 10px 100px 5px #F77737, 0 10px 100px 5px #FCAF45, -10px 10px 100px 5px #FFDC80;
+}
+
+/* Create the checkmark/indicator (hidden when not checked) */
+.pgagan-gv-unlucky-yak-4 .checkmark:after {
+ content: "";
+ position: absolute;
+ display: none;
+}
+
+/* Show the checkmark when checked */
+.pgagan-gv-unlucky-yak-4 .container input:checked ~ .checkmark:after {
+ display: block;
+}
+
+/* Style the checkmark/indicator */
+.pgagan-gv-unlucky-yak-4 .container .checkmark:after {
+ left: 0.45em;
+ top: 0.25em;
+ width: 0.25em;
+ height: 0.5em;
+ border: solid #f0f0f0;
+ border-width: 0 0.15em 0.15em 0;
+ transform: rotate(45deg);
+}</style></head><body><div class="pgagan-gv-unlucky-yak-4"><label class="container">
+  <input type="checkbox" checked="checked">
+  <div class="checkmark"></div>
+</label></div></body></html>

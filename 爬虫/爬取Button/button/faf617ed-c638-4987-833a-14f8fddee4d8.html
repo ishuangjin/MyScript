@@ -1,0 +1,53 @@
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title > Document </title><style >.pBHARGAVPATEL1244-great-catfish-18 button {
+ outline: none;
+ cursor: pointer;
+ border: none;
+ padding: 0.9rem 2rem;
+ margin: 0;
+ font-family: inherit;
+ font-size: inherit;
+ position: relative;
+ display: inline-block;
+ letter-spacing: 0.05rem;
+ font-weight: 700;
+ font-size: 17px;
+ border-radius: 500px;
+ overflow: hidden;
+ background: #66ff66;
+ color: ghostwhite;
+}
+
+.pBHARGAVPATEL1244-great-catfish-18 button span {
+ position: relative;
+ z-index: 10;
+ transition: color 0.4s;
+}
+
+.pBHARGAVPATEL1244-great-catfish-18 button:hover span {
+ color: black;
+}
+
+.pBHARGAVPATEL1244-great-catfish-18 button::before,
+.pBHARGAVPATEL1244-great-catfish-18 button::after {
+ position: absolute;
+ top: 0;
+ left: 0;
+ width: 100%;
+ height: 100%;
+ z-index: 0;
+}
+
+.pBHARGAVPATEL1244-great-catfish-18 button::before {
+ content: "";
+ background: #000;
+ width: 120%;
+ left: -10%;
+ transform: skew(30deg);
+ transition: transform 0.4s cubic-bezier(0.3, 1, 0.8, 1);
+}
+
+.pBHARGAVPATEL1244-great-catfish-18 button:hover::before {
+ transform: translate3d(100%, 0, 0);
+}
+</style></head><body><div class="pBHARGAVPATEL1244-great-catfish-18"><button> <span>Button</span>
+</button></div></body></html>

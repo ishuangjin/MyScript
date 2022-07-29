@@ -1,0 +1,9 @@
+练手一(简单):http://www.whggzy.com/PoliciesAndRegulations/index.html?utm=sites_group_front.4dd516b0.0.0.0aeeb380992811ec85e0b5fac8c3351d 
+
+(练习1)https://yhgscx.miit.gov.cn/fuel-consumption-web/mainPage 中国汽车能源消耗 -适合初学爬虫的 
+
+练习二(下等偏上):https://fuwu.nhsa.gov.cn/nationalHallSt/#/search/medical 
+
+练习三(进阶):IC 交易网----IC电子元器件交易平台  随便点一个热门搜索的 需要登录
+
+https://www.oklink.com/zh-cn/btc/tx-list(请求参数加密 爬虫入门)

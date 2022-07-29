@@ -1,0 +1,32 @@
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title > Document </title><style >.psatyamchaudharydev-spicy-warthog-11 .spinner {
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ position: relative;
+ width: 100px;
+ height: 100px;
+}
+
+.psatyamchaudharydev-spicy-warthog-11 .spinner::after {
+ content: "";
+ position: absolute;
+ width: 50px;
+ height: 50px;
+ background-color: var(--blue);
+ animation: flip 1s infinite;
+}
+
+@keyframes flip {
+ 0% {
+  transform: rotate(0);
+ }
+
+ 50% {
+  transform: rotateY(180deg);
+ }
+
+ 100% {
+  transform: rotateY(180deg)  rotateX(180deg);
+ }
+}</style></head><body><div class="psatyamchaudharydev-spicy-warthog-11">
+<div class="spinner"></div></div></body></html>

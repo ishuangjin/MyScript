@@ -1,0 +1,65 @@
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title > Document </title><style >.pnikk7007-kind-jellyfish-57 .cont {
+ display: flex;
+ align-items: center;
+ transform: scale(1);
+}
+
+.pnikk7007-kind-jellyfish-57 input[type="checkbox"] {
+ height: 2rem;
+ width: 2rem;
+ margin: 5px;
+ display: inline-block;
+ appearance: none;
+ position: relative;
+ background-color: #F2ECFF;
+ border-radius: 15%;
+ cursor: pointer;
+ overflow: hidden;
+}
+
+.pnikk7007-kind-jellyfish-57 input[type="checkbox"]::after {
+ content: '';
+ display: block;
+ height: 1rem;
+ width: .5rem;
+ border-bottom: .31rem solid #a0ffe7;
+ border-right: .31rem solid #a0ffe7;
+ opacity: 0;
+ transform: rotate(45deg) translate(-50%, -50%);
+ position: absolute;
+ top: 50%;
+ left: 20%;
+ transition: .25s ease;
+}
+
+.pnikk7007-kind-jellyfish-57 input[type="checkbox"]::before {
+ content: '';
+ display: block;
+ height: 0;
+ width: 0;
+ background-color: #00C896;
+ border-radius: 50%;
+ opacity: .5;
+ transform: translate(-50%, -50%);
+ position: absolute;
+ top: 50%;
+ left: 50%;
+ transition: .3s ease;
+}
+
+.pnikk7007-kind-jellyfish-57 input[type="checkbox"]:checked::before {
+ height: 130%;
+ width: 130%;
+ opacity: 100%;
+}
+
+.pnikk7007-kind-jellyfish-57 input[type="checkbox"]:checked::after {
+ opacity: 100%;
+}
+
+.pnikk7007-kind-jellyfish-57 span {
+ font-size: 2rem;
+}</style></head><body><div class="pnikk7007-kind-jellyfish-57"><label class="cont">
+  <input checked="" type="checkbox">
+  <span></span>
+</label></div></body></html>

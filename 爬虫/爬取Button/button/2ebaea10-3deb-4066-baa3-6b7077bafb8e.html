@@ -1,0 +1,44 @@
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title > Document </title><style >.pMike11jr-white-emu-65 .btn {
+ padding: 0.9em 1.9em;
+ font-size: 16px;
+ border: none;
+ background: #6285f8;
+ color: white;
+ cursor: pointer;
+ position: relative;
+ z-index: 1;
+}
+
+.pMike11jr-white-emu-65 .btn:hover {
+ color: rgb(255, 255, 255);
+}
+
+.pMike11jr-white-emu-65 .btn::before,.pMike11jr-white-emu-65 .btn::after {
+ content: "";
+ position: absolute;
+ top: 0%;
+ left: 0%;
+ width: 100%;
+ height: 100%;
+ background: rgba(128, 128, 128, 0.096);
+ backdrop-filter: blur(10px);
+ z-index: -1;
+ transition: all 0.4s;
+}
+
+.pMike11jr-white-emu-65 .btn::after {
+ z-index: -2;
+ transition: all 0.4s;
+}
+
+.pMike11jr-white-emu-65 .btn:hover::before {
+ background: rgb(0, 0, 0, 0.315);
+ border-radius: 10px;
+}
+
+.pMike11jr-white-emu-65 .btn:hover::after {
+ background: linear-gradient(to right, #cb6ce6, #38b6ff);
+ border-radius: 10px;
+ transform: scale(1.07, 1.2) rotateX(180deg);
+}</style></head><body><div class="pMike11jr-white-emu-65"><button class="btn"> Hover Me!
+</button></div></body></html>
