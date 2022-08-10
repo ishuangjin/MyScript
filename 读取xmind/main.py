@@ -6,7 +6,7 @@
 @QQ: 1525053461
 @Mail: ishuangjin@foxmail.com
 @Date: 2022-08-08 11:06:56
-@LastEditTime: 2022-08-10 10:21:19
+@LastEditTime: 2022-08-10 10:31:38
 @FilePath: \\Github\\MyScript\\读取xmind\\main.py
 @Description: 将Xmind测试用例转化为需要的Excel格式
 @Copyright (c) 2022 by ishuangjin, All Rights Reserved.
@@ -123,7 +123,7 @@ def main():
     script_path = os.path.dirname(__file__)  # 当前脚本的绝对路径
     xmind_case = os.path.join(script_path, "XmindCase", xm_file_name)
     excel_case = os.path.join(script_path, "ExcelCase", xm_file_name.replace(".xmind", ".xlsx"))
-    case_index = xmind_to_dict(xmind_case)[0]['topic']['title']  # case在tapd上的存放路径
+    case_index = xmind_to_dict(xmind_case)[0]['topic']['title']  # case在tapd上的存放路径，取xmind画布的第一个标题
 
     xm = xmind_to_dict(xmind_case)[0]['topic']['topics']  # 读取xmind文件
     try:
