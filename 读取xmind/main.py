@@ -1,3 +1,16 @@
+#!/usr/bin/env python3
+# encoding:utf-8
+'''
+@Author: ishuangjin
+@WebSite: blog.ishuangjin.cn
+@QQ: 1525053461
+@Mail: ishuangjin@foxmail.com
+@Date: 2022-08-08 11:06:56
+@LastEditTime: 2022-08-10 10:11:09
+@FilePath: \\Github\\MyScript\\读取xmind\\main.py
+@Description: 将Xmind测试用例转化为需要的Excel格式
+@Copyright (c) 2022 by ishuangjin, All Rights Reserved.
+'''
 import os
 from xmindparser import xmind_to_dict
 import pandas as pd
@@ -103,9 +116,9 @@ def save_data(xm,
 
 def main():
     # 自定义用例名称和用例详情以外的内容
-    case_index = "Redis故障切换"  # case在tapd上的存放路径
-    demand_id = "1024593"  # 需求ID
+    demand_id = "1024029"  # 需求ID
     xm_file_name = "TCT历史执行记录迁移.xmind"  # 要操作的文件
+    case_index = xm_file_name.rsplit(".xmind")  # case在tapd上的存放路径
 
     # 路径操作
     script_path = os.path.dirname(__file__)  # 当前脚本的绝对路径
