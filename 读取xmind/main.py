@@ -6,7 +6,7 @@
 @QQ: 1525053461
 @Mail: ishuangjin@foxmail.com
 @Date: 2022-08-08 11:06:56
-@LastEditTime: 2022-08-10 10:11:09
+@LastEditTime: 2022-08-10 10:21:19
 @FilePath: \\Github\\MyScript\\读取xmind\\main.py
 @Description: 将Xmind测试用例转化为需要的Excel格式
 @Copyright (c) 2022 by ishuangjin, All Rights Reserved.
@@ -118,16 +118,16 @@ def main():
     # 自定义用例名称和用例详情以外的内容
     demand_id = "1024029"  # 需求ID
     xm_file_name = "TCT历史执行记录迁移.xmind"  # 要操作的文件
-    case_index = xm_file_name.rsplit(".xmind")  # case在tapd上的存放路径
 
     # 路径操作
     script_path = os.path.dirname(__file__)  # 当前脚本的绝对路径
     xmind_case = os.path.join(script_path, "XmindCase", xm_file_name)
     excel_case = os.path.join(script_path, "ExcelCase", xm_file_name.replace(".xmind", ".xlsx"))
+    case_index = xmind_to_dict(xmind_case)[0]['topic']['title']  # case在tapd上的存放路径
 
     xm = xmind_to_dict(xmind_case)[0]['topic']['topics']  # 读取xmind文件
     try:
-        save_data(xm, excel_case, case_index, demand_id)
+        save_data(xm=xm, file_name=excel_case, case_index=case_index, demand_id=demand_id)
         print("转化后的文件路径为:", excel_case)
     except PermissionError:
         print("Error:文件被占用,请关闭已打开的xlsx文件")
