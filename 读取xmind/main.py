@@ -6,7 +6,7 @@
 @QQ: 1525053461
 @Mail: ishuangjin@foxmail.com
 @Date: 2022-08-08 11:06:56
-@LastEditTime: 2022-09-15 16:16:09
+@LastEditTime: 2022-09-15 16:33:23
 @FilePath: \\Github\\MyScript\\读取xmind\\main.py
 @Description: 将Xmind测试用例转化为需要的Excel格式
 @Copyright (c) 2022 by ishuangjin, All Rights Reserved.
@@ -114,11 +114,7 @@ def save_data(xm,
     return print(msg)
 
 
-def main():
-    # 自定义用例名称和用例详情以外的内容
-    demand_id = "1025586"  # 需求ID
-    xm_file_name = "TCT2.0测试用例.xmind"  # 要操作的文件
-
+def run(xm_file_name, demand_id):
     # 路径操作
     script_path = os.path.dirname(__file__)  # 当前脚本的绝对路径
     xmind_case = os.path.join(script_path, "XmindCase", xm_file_name)
@@ -133,6 +129,13 @@ def main():
         print("Error:文件被占用,请关闭已打开的xlsx文件")
     else:
         pass
+
+
+def main():
+    # 填写需求ID和xmind文件名
+    demand_id = "1025586"  # 需求ID
+    xm_file_name = "TCT2.0测试用例.xmind"  # 要操作的文件
+    run(xm_file_name, demand_id)
 
 
 if __name__ == '__main__':
