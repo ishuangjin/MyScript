@@ -6,7 +6,7 @@
 @QQ: 1525053461
 @Mail: ishuangjin@foxmail.com
 @Date: 2022-08-08 11:06:56
-@LastEditTime: 2022-08-12 15:52:41
+@LastEditTime: 2022-09-15 16:16:09
 @FilePath: \\Github\\MyScript\\读取xmind\\main.py
 @Description: 将Xmind测试用例转化为需要的Excel格式
 @Copyright (c) 2022 by ishuangjin, All Rights Reserved.
@@ -116,8 +116,8 @@ def save_data(xm,
 
 def main():
     # 自定义用例名称和用例详情以外的内容
-    demand_id = "1024741"  # 需求ID
-    xm_file_name = "Redis故障切换测试用例.xmind"  # 要操作的文件
+    demand_id = "1025586"  # 需求ID
+    xm_file_name = "TCT2.0测试用例.xmind"  # 要操作的文件
 
     # 路径操作
     script_path = os.path.dirname(__file__)  # 当前脚本的绝对路径
