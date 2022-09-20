@@ -6,7 +6,7 @@
 @QQ: 1525053461
 @Mail: ishuangjin@foxmail.com
 @Date: 2022-08-08 11:06:56
-@LastEditTime: 2022-09-15 16:33:23
+@LastEditTime: 2022-09-20 17:36:45
 @FilePath: \\Github\\MyScript\\读取xmind\\main.py
 @Description: 将Xmind测试用例转化为需要的Excel格式
 @Copyright (c) 2022 by ishuangjin, All Rights Reserved.
@@ -133,8 +133,8 @@ def run(xm_file_name, demand_id):
 
 def main():
     # 填写需求ID和xmind文件名
-    demand_id = "1025586"  # 需求ID
-    xm_file_name = "TCT2.0测试用例.xmind"  # 要操作的文件
+    demand_id = "1024593"  # 需求ID
+    xm_file_name = "TSF1.29.2to1.29.5组件升级测试用例.xmind"  # 要操作的文件
     run(xm_file_name, demand_id)
 
 
