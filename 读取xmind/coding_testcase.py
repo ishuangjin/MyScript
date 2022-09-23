@@ -5,11 +5,11 @@
 @WebSite: blog.ishuangjin.cn
 @QQ: 1525053461
 @Mail: ishuangjin@foxmail.com
-@Date: 2022-08-08 11:06:56
-@LastEditTime: 2022-09-21 17:18:13
-@FilePath: \\Github\\MyScript\\读取xmind\\main.py
-@Description: 将Xmind测试用例转化为需要的Excel格式
+@Date: 2022-09-21 17:17:14
+@LastEditTime: 2022-09-21 18:40:35
+@FilePath: \\Github\\MyScript\\读取xmind\\coding_testcase.py
 @Copyright (c) 2022 by ishuangjin, All Rights Reserved.
+@Description: 
 '''
 import os
 from xmindparser import xmind_to_dict
@@ -57,40 +57,16 @@ def get_data(xm):  # 提取所有用例数据
     return case_count, case_list, case_front, case_step, case_result
 
 
-def save_data(xm,
-              file_name="path_to_file.xlsx",
-              case_index="",
-              demand_id="请填写需求ID",
-              case_type="功能测试",
-              case_state="正常",
-              case_level="中",
-              case_creater="黄金") -> None:
-    """
-    “用例目录”请填写完整路径，用“-”分隔。如果目录为空，默认导入为“未规划目录”中；如果用例目录不存在，请在预览页面选择是否要自动创建目录。
-    “用例名称”为必填项。
-    “需求ID”请填写需求ID,多个需求ID以英文;号隔开。需求必须是本项目下的需求。
-    “前置条件”请填写合法文本。
-    “用例步骤”请填写合法文本。
-    “预期结果”请填写合法文本。
-    “用例类型”请填写：功能测试、性能测试、安全性测试、其他。
-    “用例状态”请填写：正常、待更新、已废弃。
-    “用例等级”请填写：高、中、低。
-    """
-    row0 = ["用例目录", "用例名称", "需求ID", "前置条件", "用例步骤", "预期结果", "用例类型", "用例状态", "用例等级", "创建人"]  # 表头
+def save_data(xm, file_name="path_to_file.xlsx", case_level="P2") -> None:
+
+    row0 = ["标题", "前置条件", "步骤", "预期结果", "等级"]  # 表头
     some_cos = get_data(xm)
 
     def lsbd(field):  # list_build，列表长度为用例数量
         return [field for _ in range(some_cos[0])]
 
     # 构建完整的数据列表，由多个列表组成新的列表
-    data_value_list = [
-        lsbd(case_index), some_cos[1],
-        lsbd(demand_id), some_cos[2], some_cos[3], some_cos[4],
-        lsbd(case_type),
-        lsbd(case_state),
-        lsbd(case_level),
-        lsbd(case_creater)
-    ]
+    data_value_list = [some_cos[1], some_cos[2], some_cos[3], some_cos[4], lsbd(case_level)]
 
     # 将数据转化为字典格式，并将row0表头对应每列数据
     def get_data_value(data_value_list):
@@ -104,9 +80,8 @@ def save_data(xm,
     case_data = get_data_value(data_value_list)
     try:
         df = pd.DataFrame(case_data, columns=row0)
-        print(df.loc[:, "用例名称"], "\n-------------------------\n")
+        # print(df.loc[:, "用例名称"], "\n-------------------------\n")
         df.to_excel(file_name, index=None, sheet_name="Sheet1")  # 保存成excel格式
-        # print(df)
     except ValueError:  # 如果报这个错，可能是用例详情缺少，表的数据长度不一致，不能转成DataFrame格式
         msg = "Error:请检查xmind文件,是否缺失部分用例详情"
     else:
@@ -114,16 +89,16 @@ def save_data(xm,
     return print(msg)
 
 
-def run(xm_file_name, demand_id):
+def run(xm_file_name):
     # 路径操作
     script_path = os.path.dirname(__file__)  # 当前脚本的绝对路径
     xmind_case = os.path.join(script_path, "XmindCase", xm_file_name)
-    excel_case = os.path.join(script_path, "ExcelCase", xm_file_name.replace(".xmind", ".xlsx"))
-    case_index = xmind_to_dict(xmind_case)[0]['topic']['title']  # case在tapd上的存放路径，取xmind画布的第一个标题
+    excel_case = os.path.join(script_path, "ExcelCase", xm_file_name.replace(".xmind", "coding.xlsx"))
+    # case_index = xmind_to_dict(xmind_case)[0]['topic']['title']  # case在tapd上的存放路径，取xmind画布的第一个标题
 
     xm = xmind_to_dict(xmind_case)[0]['topic']['topics']  # 读取xmind文件
     try:
-        save_data(xm=xm, file_name=excel_case, case_index=case_index, demand_id=demand_id)
+        save_data(xm=xm, file_name=excel_case)
         print("转化后的文件路径为:", excel_case)
     except PermissionError:
         print("Error:文件被占用,请关闭已打开的xlsx文件")
@@ -133,9 +108,8 @@ def run(xm_file_name, demand_id):
 
 def main():
     # 填写需求ID和xmind文件名
-    demand_id = "1024593"  # 需求ID
     xm_file_name = "TSF1.29.2to1.29.5组件升级测试用例.xmind"  # 要操作的文件
-    run(xm_file_name, demand_id)
+    run(xm_file_name)
 
 
 if __name__ == '__main__':
