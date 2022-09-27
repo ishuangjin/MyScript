@@ -6,7 +6,7 @@
 @QQ: 1525053461
 @Mail: ishuangjin@foxmail.com
 @Date: 2022-08-08 11:06:56
-@LastEditTime: 2022-08-16 17:39:50
+@LastEditTime: 2022-09-27 17:21:18
 @FilePath: \\Github\\MyScript\\TSF接口测试\\consumer-api.py
 @Copyright (c) 2022 by ishuangjin, All Rights Reserved.
 @Description: 测试tsf服务限流，脚本运行run_time秒，在每个unit_time内运行count次
@@ -17,26 +17,22 @@ import requests
 
 class TestUrl:
 
-    def __init__(self, host, port, url_merge, count, unit_time, run_time, tag_params=None):
+    def __init__(self, count, unit_time, run_time, all_url, tag_params=None):
         '''
         @description: 测试tsf服务限流，脚本运行run_time秒，在每个unit_time内运行count次
-        @param  self: /
-        @param  host: 被测主机
-        @param  port: 端口
-        @param  url_merge: url路径
+        @param  self:  /
         @param  count: 请求次数
         @param  unit_time: 单位时间(s)
         @param  run_time: 程序运行时间(s)
-        @return /
+        @param  all_url: 测试url
+        @param  tag_params: 标签
+        @return 
         '''
-        self.host = host
-        self.port = port
-        self.url_merge = url_merge
         self.count = count
         self.unit_time = unit_time
         self.run_time = run_time
+        self.url = all_url
         self.tag_params = tag_params
-        self.url = 'http://{}:{}'.format(self.host, self.port) + self.url_merge
 
     def ping_url(self):
         tag_params = self.tag_params
@@ -53,29 +49,31 @@ class TestUrl:
             for _ in range(self.count):
                 self.ping_url()
             use_time = time.time() - start_time
-            try:
-                sleep_time = self.unit_time - use_time
-                print(f"第{loop_n+1}次循环总耗时: {use_time:.2f}s")
+            sleep_time = self.unit_time - use_time
+            print(f"第{loop_n+1}次循环总耗时: {use_time:.2f}s")
+            if sleep_time > 0:
                 print(f"等待: {sleep_time:.2f}s ......\n")
-            except ValueError:
+            else:
                 sleep_time = 0
-                print(f"第{loop_n+1}次循环，总耗时: {use_time:.2f}s > 单位时间: {unit_time}s")
+                print(f"第{loop_n+1}次循环，总耗时: {use_time:.2f}s > 单位时间: {self.unit_time}s")
                 print("不等待直接开始下一个单位时间")
-            finally:
-                time.sleep(sleep_time)
+            time.sleep(sleep_time)
         return print("done")
 
 
-if __name__ == '__main__':
-    host = '192.168.22.4'
-    port = '42247'
+def run():
     # 每unit_time秒运行count次
-    count = 7
-    unit_time = 7
-    run_time = 300
+    count = 30
+    unit_time = 5
+    # 运行run_time秒
+    run_time = 6000
+
+    all_url = r"http://192.168.45.29:26435/group-new/demo2/shenliufei-consumer-demo1/echo-rest/4321"
     tag_params = {'tagName': 'user', 'tagValue': 'test'}
-    url_merge = r'/jin-test1/global-ns/shenliufei-consumer-demo1/echo-rest/hello'  # consumer服务 api测试
-    # url_merge = r'/jin-test1/global-ns/shenliufei-provider-demo1/echo/hello'  # provider服务 api测试
-    test_url = TestUrl(host, port, url_merge, count, unit_time, run_time, tag_params)
-    # test_url.ping_url()
+
+    test_url = TestUrl(count, unit_time, run_time, all_url, tag_params)
     test_url.loop_ping()
+
+
+if __name__ == '__main__':
+    run()

@@ -6,15 +6,20 @@
 @QQ: 1525053461
 @Mail: ishuangjin@foxmail.com
 @Date: 2022-09-21 18:22:23
-@LastEditTime: 2022-09-21 18:36:57
+@LastEditTime: 2022-09-27 17:10:55
 @FilePath: \\Github\\MyScript\\test.py
 @Copyright (c) 2022 by ishuangjin, All Rights Reserved.
 @Description: 
 '''
-case_index_list = []
-for case_index in range(200):
-    case_index_list.append(case_index)
-# print(case_index_list)
 
-c = list(range(200))
-print(c)
+
+def ff(a, *b, **c):
+    print(a)
+    print(bool(b))
+    print(bool(c))
+
+
+# ff(1232,4,5,6,7,8,ss="sadf",xx="fff",ww="asdf")
+
+if __name__ == '__main__':
+    ff(1)
