@@ -6,7 +6,7 @@
 @QQ: 1525053461
 @Mail: ishuangjin@foxmail.com
 @Date: 2022-08-08 11:06:56
-@LastEditTime: 2022-09-27 17:21:18
+@LastEditTime: 2022-09-29 10:52:06
 @FilePath: \\Github\\MyScript\\TSF接口测试\\consumer-api.py
 @Copyright (c) 2022 by ishuangjin, All Rights Reserved.
 @Description: 测试tsf服务限流，脚本运行run_time秒，在每个unit_time内运行count次
@@ -26,7 +26,7 @@ class TestUrl:
         @param  run_time: 程序运行时间(s)
         @param  all_url: 测试url
         @param  tag_params: 标签
-        @return 
+        @return None
         '''
         self.count = count
         self.unit_time = unit_time
@@ -41,6 +41,7 @@ class TestUrl:
 
     def loop_ping(self):
         loop_num = self.run_time // self.unit_time  # 运行多少个循环
+        loop_start_time = time.time()
         print(f"每{self.unit_time}秒运行{self.count}次，共运行{loop_num}个循环，开始执行！")
         for loop_n in range(loop_num):
             start_time = time.time()  # 获取开始时间
@@ -50,13 +51,15 @@ class TestUrl:
                 self.ping_url()
             use_time = time.time() - start_time
             sleep_time = self.unit_time - use_time
-            print(f"第{loop_n+1}次循环总耗时: {use_time:.2f}s")
+            print(f"第{loop_n+1}次循环总耗时: {use_time:.2f}s, 程序已运行{time.time()-loop_start_time:.2f}s")
+            # print(f"\n......\n")
             if sleep_time > 0:
-                print(f"等待: {sleep_time:.2f}s ......\n")
+                print(f"等待: {sleep_time:.2f}s ......")
             else:
                 sleep_time = 0
                 print(f"第{loop_n+1}次循环，总耗时: {use_time:.2f}s > 单位时间: {self.unit_time}s")
                 print("不等待直接开始下一个单位时间")
+            print()
             time.sleep(sleep_time)
         return print("done")
 
