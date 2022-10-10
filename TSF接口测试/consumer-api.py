@@ -6,7 +6,7 @@
 @QQ: 1525053461
 @Mail: ishuangjin@foxmail.com
 @Date: 2022-08-08 11:06:56
-@LastEditTime: 2022-09-29 10:52:06
+@LastEditTime: 2022-10-10 10:56:02
 @FilePath: \\Github\\MyScript\\TSF接口测试\\consumer-api.py
 @Copyright (c) 2022 by ishuangjin, All Rights Reserved.
 @Description: 测试tsf服务限流，脚本运行run_time秒，在每个unit_time内运行count次
@@ -66,15 +66,18 @@ class TestUrl:
 
 def run():
     # 每unit_time秒运行count次
-    count = 30
-    unit_time = 5
+    count = 105
+    unit_time = 60
     # 运行run_time秒
     run_time = 6000
 
-    all_url = r"http://192.168.45.29:26435/group-new/demo2/shenliufei-consumer-demo1/echo-rest/4321"
-    tag_params = {'tagName': 'user', 'tagValue': 'test'}
+    # all_url = r"http://192.168.45.29:26435/group-new/demo2/shenliufei-consumer-demo1/echo-rest/hello"
+    all_url = r"http://192.168.45.29:44980/echo-rest/hello"
+    # tag_params = {'tagName': 'user', 'tagValue': 'test'}
 
-    test_url = TestUrl(count, unit_time, run_time, all_url, tag_params)
+    # test_url = TestUrl(count, unit_time, run_time, all_url, tag_params)
+    test_url = TestUrl(count, unit_time, run_time, all_url)
+
     test_url.loop_ping()
 
 
