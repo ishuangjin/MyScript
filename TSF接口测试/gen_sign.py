@@ -6,7 +6,7 @@
 @QQ: 1525053461
 @Mail: ishuangjin@foxmail.com
 @Date: 2022-10-10 16:04:47
-@LastEditTime: 2022-10-10 16:42:05
+@LastEditTime: 2022-10-10 17:20:26
 @FilePath: \\Github\\MyScript\\TSF接口测试\\gen_sign.py
 @Copyright (c) 2022 by ishuangjin, All Rights Reserved.
 @Description:  微服务网关密钥对鉴权
@@ -34,9 +34,7 @@ def fun(secretId, secretKey):
     signstr = nonce + secretId + secretKey
     local_sign_seed = hmac.new(secretKey.encode('utf-8'), signstr.encode('utf-8'), sha1).digest()
     sign = base64.b64encode(local_sign_seed).decode('ascii')
-    print("")
-    print("generate local sign: " + sign)
-    print("")
+    print("\ngenerate local sign: " + sign + "\n")
     print("=== http request headers as followed === ")
     print("x-mg-nonce: " + nonce)
     print("x-mg-secretid: " + secretId)

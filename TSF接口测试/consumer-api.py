@@ -6,7 +6,7 @@
 @QQ: 1525053461
 @Mail: ishuangjin@foxmail.com
 @Date: 2022-08-08 11:06:56
-@LastEditTime: 2022-10-10 10:56:02
+@LastEditTime: 2022-10-10 17:50:12
 @FilePath: \\Github\\MyScript\\TSF接口测试\\consumer-api.py
 @Copyright (c) 2022 by ishuangjin, All Rights Reserved.
 @Description: 测试tsf服务限流，脚本运行run_time秒，在每个unit_time内运行count次
@@ -17,7 +17,7 @@ import requests
 
 class TestUrl:
 
-    def __init__(self, count, unit_time, run_time, all_url, tag_params=None):
+    def __init__(self, count, unit_time, run_time, all_url, *args):
         '''
         @description: 测试tsf服务限流，脚本运行run_time秒，在每个unit_time内运行count次
         @param  self:  /
@@ -32,11 +32,11 @@ class TestUrl:
         self.unit_time = unit_time
         self.run_time = run_time
         self.url = all_url
-        self.tag_params = tag_params
+        self.tag_params = args[0]
+        self.headers = args[1]
 
     def ping_url(self):
-        tag_params = self.tag_params
-        re = requests.get(url=self.url, params=tag_params)
+        re = requests.get(url=self.url, headers=self.headers, params=self.tag_params)
         return print(f'响应时间: {re.elapsed.total_seconds():.2f}s, 响应结果: {re.status_code}, 响应内容: {re.text}')
 
     def loop_ping(self):
@@ -71,13 +71,12 @@ def run():
     # 运行run_time秒
     run_time = 6000
 
-    # all_url = r"http://192.168.45.29:26435/group-new/demo2/shenliufei-consumer-demo1/echo-rest/hello"
-    all_url = r"http://192.168.45.29:44980/echo-rest/hello"
-    # tag_params = {'tagName': 'user', 'tagValue': 'test'}
+    all_url = r"http://192.168.45.29:26435/group-jin/demo2/shenliufei-consumer-demo1/echo-rest/hello"
+    # all_url = r"http://192.168.45.29:44980/echo-rest/hello"
+    headers = r"x-mg-traceid: 55b00164-4880-11ed-83f0-2811a82fb6cd"
 
-    # test_url = TestUrl(count, unit_time, run_time, all_url, tag_params)
-    test_url = TestUrl(count, unit_time, run_time, all_url)
-
+    tag_params = {'tagName': 'user', 'tagValue': 'test'}
+    test_url = TestUrl(count, unit_time, run_time, all_url, tag_params, headers)
     test_url.loop_ping()
 
 
