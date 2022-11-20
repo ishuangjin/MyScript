@@ -6,8 +6,8 @@
 @QQ: 1525053461
 @Mail: ishuangjin@foxmail.com
 @Date: 2022-09-21 17:17:14
-@LastEditTime: 2022-09-21 18:40:35
-@FilePath: \\Github\\MyScript\\读取xmind\\coding_testcase.py
+@LastEditTime: 2022-11-20 21:11:58
+@FilePath: \\Git\\MyScript\\读取xmind\\coding_testcase.py
 @Copyright (c) 2022 by ishuangjin, All Rights Reserved.
 @Description: 
 '''
@@ -48,7 +48,7 @@ def get_data(xm):  # 提取所有用例数据
             case_name.pop()
             get_case_name_for = False
         except IndexError:
-            print("已获取全部用例名称和用例详情")
+            pass
 
     # xm = xmind_to_dict("项目名称.xmind")[0]['topic']['topics']  # 读取xmind文件
     get_case_name(xm)
@@ -61,6 +61,8 @@ def save_data(xm, file_name="path_to_file.xlsx", case_level="P2") -> None:
 
     row0 = ["标题", "前置条件", "步骤", "预期结果", "等级"]  # 表头
     some_cos = get_data(xm)
+    print("已获取全部用例名称和用例详情")
+    print("用例数:{}".format(get_data(xm)[0]))
 
     def lsbd(field):  # list_build，列表长度为用例数量
         return [field for _ in range(some_cos[0])]
@@ -83,7 +85,14 @@ def save_data(xm, file_name="path_to_file.xlsx", case_level="P2") -> None:
         # print(df.loc[:, "用例名称"], "\n-------------------------\n")
         df.to_excel(file_name, index=None, sheet_name="Sheet1")  # 保存成excel格式
     except ValueError:  # 如果报这个错，可能是用例详情缺少，表的数据长度不一致，不能转成DataFrame格式
-        msg = "Error:请检查xmind文件,是否缺失部分用例详情"
+        error_info_help = "前置条件数量:{},用例步骤数量:{},用例结果数量:{}".format(
+            len(get_data(xm)[2]),
+            len(get_data(xm)[3]),
+            len(get_data(xm)[4]),
+        )
+        error_info = "Error:请检查xmind文件,是否缺失部分用例详情\n"
+        msg = error_info + error_info_help
+        # print(get_data(xm)[1])
     else:
         msg = "success!"
     return print(msg)
@@ -108,7 +117,7 @@ def run(xm_file_name):
 
 def main():
     # 填写需求ID和xmind文件名
-    xm_file_name = "TSF1.29.2to1.29.5组件升级测试用例.xmind"  # 要操作的文件
+    xm_file_name = "TCT1.0_IPv6.xmind"  # 要操作的文件
     run(xm_file_name)
 
 
