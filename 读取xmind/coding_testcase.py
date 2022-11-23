@@ -6,7 +6,7 @@
 @QQ: 1525053461
 @Mail: ishuangjin@foxmail.com
 @Date: 2022-09-21 17:17:14
-@LastEditTime: 2022-11-21 10:36:10
+@LastEditTime: 2022-11-23 15:16:36
 @FilePath: \\Git\\MyScript\\读取xmind\\coding_testcase.py
 @Copyright (c) 2022 by ishuangjin, All Rights Reserved.
 @Description: 将xmind测试用例转换成Excel格式
@@ -117,7 +117,7 @@ def run(xm_file_name):
 
 def main():
     # 填写需求ID和xmind文件名
-    xm_file_name = "TCT2.0测试用例.xmind"  # 要操作的文件
+    xm_file_name = "TCNP迁移TKE补充测试用例.xmind"  # 要操作的文件
     run(xm_file_name)
 
 
