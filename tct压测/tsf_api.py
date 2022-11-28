@@ -8,7 +8,6 @@ import pandas as pd
 import json
 import pymysql
 
-
 # 租户端
 secret_id = "52H5f9G2e7aOc4e9Qd859fb4F5ReTe06"
 secret_key = "QeSa56PbafP8O96L0LceN278aI5326Te"
@@ -27,12 +26,12 @@ date = datetime.utcfromtimestamp(timestamp).strftime("%Y-%m-%d")
 # logger
 logger = logging.getLogger(__name__)
 logger.setLevel(level=logging.INFO)
-formatter = logging.Formatter(
-    '%(asctime)s - %(filename)s[func:%(funcName)s][line:%(lineno)d] - %(levelname)s: %(message)s')
+formatter = logging.Formatter('%(asctime)s - %(filename)s[func:%(funcName)s][line:%(lineno)d] - %(levelname)s: %(message)s')
 console = logging.StreamHandler()
 console.setLevel(logging.INFO)
 console.setFormatter(formatter)
 logger.addHandler(console)
+
 
 # 签名方法v3
 def get_sign_heades(action, params):
@@ -45,21 +44,14 @@ def get_sign_heades(action, params):
     canonical_headers = "content-type:%s\nhost:%s\n" % (ct, host)
     signed_headers = "content-type;host"
     hashed_request_payload = hashlib.sha256(payload.encode("utf-8")).hexdigest()
-    canonical_request = (http_request_method + "\n" +
-                         canonical_uri + "\n" +
-                         canonical_querystring + "\n" +
-                         canonical_headers + "\n" +
-                         signed_headers + "\n" +
-                         hashed_request_payload)
+    canonical_request = (http_request_method + "\n" + canonical_uri + "\n" + canonical_querystring + "\n" + canonical_headers +
+                         "\n" + signed_headers + "\n" + hashed_request_payload)
     # print(canonical_request)
 
     # ************* 步骤 2：拼接待签名字符串 *************
     credential_scope = date + "/" + service + "/" + "tc3_request"
     hashed_canonical_request = hashlib.sha256(canonical_request.encode("utf-8")).hexdigest()
-    string_to_sign = (algorithm + "\n" +
-                      str(timestamp) + "\n" +
-                      credential_scope + "\n" +
-                      hashed_canonical_request)
+    string_to_sign = (algorithm + "\n" + str(timestamp) + "\n" + credential_scope + "\n" + hashed_canonical_request)
 
     # print(string_to_sign)
 
@@ -75,10 +67,8 @@ def get_sign_heades(action, params):
     # print(signature)
 
     # ************* 步骤 4：拼接 Authorization *************
-    authorization = (algorithm + " " +
-                     "Credential=" + secret_id + "/" + credential_scope + ", " +
-                     "SignedHeaders=" + signed_headers + ", " +
-                     "Signature=" + signature)
+    authorization = (algorithm + " " + "Credential=" + secret_id + "/" + credential_scope + ", " + "SignedHeaders=" +
+                     signed_headers + ", " + "Signature=" + signature)
     # print(authorization)
     headers = {
         "Authorization": authorization,
@@ -108,12 +98,12 @@ def get_task_id_name(sql):
     :return: 数据库查询结果，两层元组嵌套((id1,name1),(id2,name2),(id3,name3),(id4,name4)...)
     """
     # global sql_results
-    db_cfg = {'host': '192.168.77.88',
-              'database': 'task_schedule',
-              'user': 'root',
-              'password': 'Tcdn@2007'}
-    db = pymysql.connect(host=db_cfg['host'], database=db_cfg['database'],
-                         user=db_cfg['user'], password=db_cfg['password'], charset='utf8mb4')
+    db_cfg = {'host': '192.168.77.88', 'database': 'task_schedule', 'user': 'root', 'password': 'Tcdn@2007'}
+    db = pymysql.connect(host=db_cfg['host'],
+                         database=db_cfg['database'],
+                         user=db_cfg['user'],
+                         password=db_cfg['password'],
+                         charset='utf8mb4')
     cursor = db.cursor()
     # sql = """SELECT `id`,`task_name` FROM `task_record` limit 2000;"""
     try:
@@ -136,35 +126,37 @@ def create_random_task(task_start=1, task_end=None, task_name_start="random_task
     :param task_start:任务名字起始
     :param task_end:任务名字结束
     :return: None
-    eg:create_random_task(1, 3),创建任务太保_task1、太保_task2、太保_task3
+    eg:create_random_task(1, 3),创建任务random_task1、random_task2、random_task3
     """
     for num in range(int(task_start), int(task_end) + 1):
         task_name = task_name_start + str(num)
-        params = {"action": "CreateTask",
-                  "serviceType": "tsf",
-                  "regionId": 1,
-                  "data": {
-                      "Version": "2018-03-26",
-                      "TaskName": task_name,
-                      "GroupId": "group-6yog6evl",
-                      "TaskType": "java",
-                      "TaskContent": "com.tencent.cloud.task.spring.SimpleSpringBeanLogTask",
-                      "ExecuteType": "unicast",
-                      "TimeOut": 900000,
-                      "SuccessOperator": "GTE",
-                      "SuccessRatio": 80,
-                      "TaskRule": {
-                          "RuleType": "Cron",
-                          "Expression": "0 0/5 * * * ?"},
-                      "ShardArguments": [],
-                      "TaskArgument": "",
-                      "RetryCount": 0,
-                      "RetryInterval": 0,
-                      "AdvanceSettings": {
-                          "SubTaskConcurrency": 2
-                      }
-                  }
-                  }
+        params = {
+            "action": "CreateTask",
+            "serviceType": "tsf",
+            "regionId": 1,
+            "data": {
+                "Version": "2018-03-26",
+                "TaskName": task_name,
+                "GroupId": "group-6yog6evl",
+                "TaskType": "java",
+                "TaskContent": "com.tencent.cloud.task.spring.SimpleSpringBeanLogTask",
+                "ExecuteType": "unicast",
+                "TimeOut": 900000,
+                "SuccessOperator": "GTE",
+                "SuccessRatio": 80,
+                "TaskRule": {
+                    "RuleType": "Cron",
+                    "Expression": "0 0/5 * * * ?"
+                },
+                "ShardArguments": [],
+                "TaskArgument": "",
+                "RetryCount": 0,
+                "RetryInterval": 0,
+                "AdvanceSettings": {
+                    "SubTaskConcurrency": 2
+                }
+            }
+        }
         resp = api_post(action="DescribeReleasedConfig", params=params)
         print("正在创建随机任务：", task_name)
         print(resp)
@@ -180,46 +172,57 @@ def create_shard_task(task_start=1, task_end=None, task_name_start="shard_task")
     """
     for num in range(int(task_start), int(task_end) + 1):
         task_name = task_name_start + str(num)
-        params = {"action": "CreateTask",
-                  "serviceType": "tsf",
-                  "regionId": 1,
-                  "data": {
-                      "Version": "2018-03-26",
-                      "TaskName": task_name,
-                      "GroupId": "group-6yog6evl",
-                      "TaskType": "java",
-                      "TaskContent": "com.tencent.cloud.task.SimpleShardExecutableTask",
-                      "ExecuteType": "shard",
-                      "TimeOut": 900000,
-                      "SuccessOperator": "GTE",
-                      "SuccessRatio": 100,
-                      "TaskRule": {
-                          "RuleType": "Cron",
-                          "Expression": "0 0/5 * * * ?"},
-                      "ShardArguments": [
-                          {
-                              "ShardKey": 1,
-                              "ShardValue": "a"
-                          },
-                          {
-                              "ShardKey": 2,
-                              "ShardValue": "b"
-                          },
-                          {
-                              "ShardKey": 3,
-                              "ShardValue": "c"
-                          }
-                      ],
-                      "TaskArgument": "",
-                      "ProgramIdList": [],
-                      "RetryCount": 0,
-                      "RetryInterval": 0,
-                      "ShardCount": 3,
-                      "AdvanceSettings": {
-                          "SubTaskConcurrency": 2
-                      }
-                  }
-                  }
+        params = {
+            "action": "CreateTask",
+            "serviceType": "tsf",
+            "regionId": 1,
+            "data": {
+                "Version":
+                "2018-03-26",
+                "TaskName":
+                task_name,
+                "GroupId":
+                "group-6yog6evl",
+                "TaskType":
+                "java",
+                "TaskContent":
+                "com.tencent.cloud.task.SimpleShardExecutableTask",
+                "ExecuteType":
+                "shard",
+                "TimeOut":
+                900000,
+                "SuccessOperator":
+                "GTE",
+                "SuccessRatio":
+                100,
+                "TaskRule": {
+                    "RuleType": "Cron",
+                    "Expression": "0 0/5 * * * ?"
+                },
+                "ShardArguments": [{
+                    "ShardKey": 1,
+                    "ShardValue": "a"
+                }, {
+                    "ShardKey": 2,
+                    "ShardValue": "b"
+                }, {
+                    "ShardKey": 3,
+                    "ShardValue": "c"
+                }],
+                "TaskArgument":
+                "",
+                "ProgramIdList": [],
+                "RetryCount":
+                0,
+                "RetryInterval":
+                0,
+                "ShardCount":
+                3,
+                "AdvanceSettings": {
+                    "SubTaskConcurrency": 2
+                }
+            }
+        }
 
         resp = api_post(action="DescribeReleasedConfig", params=params)
         print("正在创建分片任务：", task_name)
@@ -253,14 +256,7 @@ def alter_task(func, task_start=0, task_count=None):
     for task_id_tuple in task_tuple:
         task_id = task_id_tuple[0]
         task_name = task_id_tuple[1]
-        params = {"action": func,
-                  "serviceType": "tsf",
-                  "regionId": 1,
-                  "data": {
-                      "Version": "2018-03-26",
-                      "TaskId": task_id
-                  }
-                  }
+        params = {"action": func, "serviceType": "tsf", "regionId": 1, "data": {"Version": "2018-03-26", "TaskId": task_id}}
         resp = api_post(action="DescribeReleasedConfig", params=params)
         print("正在{}任务：{}".format(func, task_name))
         print(resp)
@@ -277,7 +273,7 @@ def alter_task_flow(func, task_start=0, task_count=None):
     if task_start and task_count:
         if func == "DeleteTaskFlow":
             alter_task("DisableTask", task_start, task_count)
-        sql = """SELECT `id`,flow_name FROM task_flow limit {},{};""".format(task_start,task_count)
+        sql = """SELECT `id`,flow_name FROM task_flow limit {},{};""".format(task_start, task_count)
     else:
         if func == "EnableTaskFlow":
             sql = """SELECT `id`,flow_name FROM task_flow WHERE `state`='DISABLED';"""
@@ -293,14 +289,7 @@ def alter_task_flow(func, task_start=0, task_count=None):
     for task_id_tuple in task_tuple:
         task_id = task_id_tuple[0]
         task_name = task_id_tuple[1]
-        params = {"action": func,
-                  "serviceType": "tsf",
-                  "regionId": 1,
-                  "data": {
-                      "Version": "2018-03-26",
-                      "FlowId": task_id
-                  }
-                  }
+        params = {"action": func, "serviceType": "tsf", "regionId": 1, "data": {"Version": "2018-03-26", "FlowId": task_id}}
         resp = api_post(action="DescribeReleasedConfig", params=params)
         print("正在{}任务：{}".format(func, task_name))
         print(resp)
@@ -315,6 +304,7 @@ def create_task_flow(task_start=0, task_count=0, limit=20, flow_name_start="flow
     :param limit:每个工作流的任务数
     :return:
     """
+
     def create_flow(params, flow_name):
         print('开始创建工作流:' + flow_name)
         resp = api_post(action="CreateTaskFlow", params=params)
@@ -326,7 +316,7 @@ def create_task_flow(task_start=0, task_count=0, limit=20, flow_name_start="flow
     pagesize = (len(sql_results) // limit) + 1  # 工作流数
     for page_index in range(0, pagesize):  # 第page_index个工作流
         flow_list = []
-        sql_results_split = sql_results[page_index * limit: (page_index + 1) * limit]  # 切割总任务，按照每页limit个切分成pagesize个
+        sql_results_split = sql_results[page_index * limit:(page_index + 1) * limit]  # 切割总任务，按照每页limit个切分成pagesize个
         if len(sql_results_split) != limit:  # 如果存在不够limit个任务的退出循环
             break
         # print('第{}个工作流:'.format(page_index))
@@ -371,18 +361,21 @@ def create_task_flow(task_start=0, task_count=0, limit=20, flow_name_start="flow
             flow_name = flow_name_start + str(page_index + 1 + task_start // limit)
         else:  # 开始的任务为0，则任务名从1开始
             flow_name = flow_name_start + str(page_index + 1)
-        params = {"action": "CreateTaskFlow",
-                  "serviceType": "tsf",
-                  "regionId": 1,
-                  "data": {
-                      "Version": "2018-03-26",
-                      "FlowName": flow_name,
-                      "TimeOut": 9000000,
-                      "TriggerRule": {
-                          "RuleType": "Cron",
-                          "Expression": "0 0/5 * * * ?"
-                      },
-                      "FlowEdges": flow_list}}
+        params = {
+            "action": "CreateTaskFlow",
+            "serviceType": "tsf",
+            "regionId": 1,
+            "data": {
+                "Version": "2018-03-26",
+                "FlowName": flow_name,
+                "TimeOut": 9000000,
+                "TriggerRule": {
+                    "RuleType": "Cron",
+                    "Expression": "0 0/5 * * * ?"
+                },
+                "FlowEdges": flow_list
+            }
+        }
         create_flow(params=params, flow_name=flow_name)
 
 
@@ -405,7 +398,8 @@ def main():
     # 创建工作流任务 flow_test4001、flow_test4002、...flow_test6000
     # create_task_flow(4000, 2000)
     """
-    alter_task("DisableTask", 0, 1)
+    # alter_task("DisableTask", 0, 1)
+    create_random_task(51, 100)
 
 
 if __name__ == '__main__':
