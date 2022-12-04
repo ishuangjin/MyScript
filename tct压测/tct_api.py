@@ -98,7 +98,7 @@ def get_task_id_name(sql):
     :return: 数据库查询结果，两层元组嵌套((id1,name1),(id2,name2),(id3,name3),(id4,name4)...)
     """
     # global sql_results
-    db_cfg = {'host': '192.168.77.88', 'database': 'task_schedule', 'user': 'root', 'password': 'Tcdn@2007'}
+    db_cfg = {'host': '192.168.77.4', 'database': 'task_schedule', 'user': 'root', 'password': 'Tcdn@2007'}
     db = pymysql.connect(host=db_cfg['host'],
                          database=db_cfg['database'],
                          user=db_cfg['user'],
@@ -242,7 +242,7 @@ def alter_task(func, task_start=0, task_count=None):
             alter_task("DisableTask", task_start, task_count)
         sql = """SELECT `id`,task_name FROM task_record limit {},{};""".format(task_start, task_count)
     else:
-        if func == "ENABLED":
+        if func == "EnableTask":
             sql = """SELECT `id`,task_name FROM task_record WHERE `state`='DISABLED';"""
         elif func == "DisableTask":
             sql = """SELECT `id`,task_name FROM task_record WHERE `state`='ENABLED';"""
@@ -256,6 +256,7 @@ def alter_task(func, task_start=0, task_count=None):
     for task_id_tuple in task_tuple:
         task_id = task_id_tuple[0]
         task_name = task_id_tuple[1]
+        print(task_id)
         params = {"action": func, "serviceType": "tsf", "regionId": 1, "data": {"Version": "2018-03-26", "TaskId": task_id}}
         resp = api_post(action="DescribeReleasedConfig", params=params)
         print("正在{}任务：{}".format(func, task_name))
@@ -380,7 +381,7 @@ def create_task_flow(task_start=0, task_count=0, limit=20, flow_name_start="flow
 
 
 def main():
-    """
+
     # 创建随机任务 random_task1、random_task2、...random_task100
     # create_random_task(1, 100)
 
@@ -389,7 +390,7 @@ def main():
 
     # DisableTask 停用任务，EnableTask 启用任务，DeleteTask 删除任务
     # 改变第1条数据起，一共100条数据的状态为启用
-    # alter_task("EnableTask", 0, 100)
+    alter_task("EnableTask", 0, 100)
 
     # DisableTaskFlow 停用工作流，EnableTaskFlow 启用工作流，DeleteTaskFlow 删除工作流
     # 改变第200条数据起，一共100条数据的状态为停止
@@ -397,9 +398,8 @@ def main():
 
     # 创建工作流任务 flow_test4001、flow_test4002、...flow_test6000
     # create_task_flow(4000, 2000)
-    """
+
     # alter_task("DisableTask", 0, 1)
-    create_random_task(51, 100)
 
 
 if __name__ == '__main__':
