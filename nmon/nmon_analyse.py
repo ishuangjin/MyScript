@@ -6,23 +6,19 @@
 @QQ: 1525053461
 @Mail: ishuangjin@foxmail.com
 @Date: 2022-11-30 09:57:37
-@LastEditTime: 2022-12-01 09:41:08
-@FilePath: \\Git\\MyScript\\tct压测\\nmon\\nmon_analyse.py
+@LastEditTime: 2022-12-15 14:10:54
+@FilePath: \\Github\\MyScript\\nmon\\nmon_analyse.py
 @Copyright (c) 2022 by ishuangjin, All Rights Reserved.
 @Description: 
 '''
-# -*- coding:utf-8 -*-
-import sys
 
-sys.path.append(r"G:\Git\MyScript\tct压测")
-
-from nmon import ExcelMicro
-from nmon import NmonResult
-from nmon import RConfig
-from nmon import SSHSokcet
-from nmon.NmonLog import log
-from nmon.NmonException import NmonException
-import time
+from model import ExcelMicro
+from model import NmonResult
+from model import RConfig
+from model import SSHSokcet
+from model.NmonLog import log
+from model.NmonException import NmonException
+# import time
 import traceback
 import os
 
@@ -43,9 +39,11 @@ def analyse_file(config):
     MircoFilePath = config.nmon_analyse_file
     get_all_nmon_file(config.nmon_file_dir)
     nmon_tuple = file_list
-    path = config.nmon_result_file
+    # path = config.nmon_result_file
+    path = ""
     log.info("开始解析文件")
     result = ExcelMicro.get_nmon_result_file(MircoFilePath, nmon_tuple, path)
+    log.info(result)
     log.info("解析文件结束")
     log.info("开始提取数据")
     nr = NmonResult.NmonResult(result)

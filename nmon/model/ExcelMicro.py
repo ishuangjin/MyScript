@@ -1,15 +1,23 @@
-# -*- coding:utf-8 -*-
-
-# create:2018-05-23
-# author:zengln
-# desc：excel micro 操作类
+#!/usr/bin/env python3
+# encoding:utf-8
+'''
+@Author: ishuangjin
+@WebSite: blog.ishuangjin.cn
+@QQ: 1525053461
+@Mail: ishuangjin@foxmail.com
+@Date: 2022-12-12 10:11:29
+@LastEditTime: 2022-12-13 16:33:03
+@FilePath: \\Github\\MyScript\\nmon_auto\\nmon\\ExcelMicro.py
+@Copyright (c) 2022 by ishuangjin, All Rights Reserved.
+@Description: 
+'''
 
 import win32com.client
 import pythoncom
 import win32api
 import os
 
-from nmon.NmonLog import log
+from NmonLog import log
 '''
     @:param
     micro_file：宏文件(全路径)
@@ -21,9 +29,12 @@ from nmon.NmonLog import log
 
 
 def get_nmon_result_file(micro_file, nmon_files, save_path=""):
-    x1 = win32com.client.Dispatch("Excel.Application")
+    x1 = win32com.client.DispatchEx("Excel.Application")
+    # print(x1.Name)
+    # print(x1.Version)
     # 进程是否可见, True 为可见, False 为不可见
-    x1.Visible = False
+    # x1.Visible = False
+    # x1.DisplayAlerts = 0  # 不警告
     nmon_tuple = [0]
     result_file = []
 
@@ -40,11 +51,18 @@ def get_nmon_result_file(micro_file, nmon_files, save_path=""):
     else:
         for i in range(0, len(nmon_files)):
             result_file.append(nmon_files[i] + ".xlsx")
+            # print("nmon_files[i]:", nmon_files[i])
+    # print("save_path:", save_path)
+    # print("result_file:", result_file)
 
     try:
         x1.Application.Run("Main", 0, save_path, nmon_tuple)
+        print("save_path:", save_path)
+        print("nmon_tuple:", nmon_tuple)
+        # Analyze nmon data
     except pythoncom.com_error as error:
         log.error(win32api.FormatMessage(error.excepinfo[0]))
+        # pass
     finally:
         x1.Quit()
         x1 = None
@@ -65,3 +83,12 @@ def check_file(nmon_files, file_tuple):
         for index in range(0, len(file_list)):
             file_name = os.path.join(nmon_files, file_list[index])
             check_file(file_name, file_tuple)
+
+
+if __name__ == '__main__':
+    MircoFilePath = r"D:\Github\MyScript\nmon_auto\nmon\data\nmonanalyserv66.xlsm"
+    nmon_files = ['D:\\Github\\MyScript\\nmon_auto\\nmon\\data\\nmon_file_dir\\192.168.77.90\\i-po2dqfef_221213_1414.nmon']
+    # path = r"D:\Github\MyScript\nmon_auto\nmon\data\nmon_result_file"
+    path = ""
+    result = get_nmon_result_file(MircoFilePath, nmon_files, path)
+    print(result)

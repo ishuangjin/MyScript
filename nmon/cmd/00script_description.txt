@@ -1,0 +1,73 @@
+1.nmon常用命令：
+
+./nmon -s1 -c300 -f -m /root/nmon-test-result/项目-50并发/
+
+2.如何批量运行nmon？
+
+需求：目前有10台服务器（192.168.1.11-20）需要进行监控，且这10台服务器均只能通过堡垒机访问。现在找到另一台可远程访问的服务器A（192.168.1.10），通过它可ssh连接到这10台服务器。现在有一个应用部署在这10台服务器上，需要在性能测试的同时监控他们的CPU，内存情况，如何？
+
+思路：多台主机建立信任，一台来执行脚本。
+
+解决方法：
+
+（1）首先拷贝公钥，使我们可以通过A直接ssh这10台服务器，而不需要输入密码。
+ssh-keygen //生成密钥
+ssh-copy-id -i ./.ssh/id_rsa.pub "-p 10022 root@192.168.1.11" //拷贝密钥
+ssh -p 10022 root@192.168.1.11 //拷贝完成后，通过ssh连接试试，应该可以不输入密码直接连接成功<br>
+ssh-copy-id -i ./.ssh/id_rsa.pub "-p 10022 root@192.168.1.12" //连接成功后，切回服务器A，同样的方法，将密钥拷贝到其他9个服务器
+ssh-copy-id -i ./.ssh/id_rsa.pub "-p 10022 root@192.168.1.13"
+ssh-copy-id -i ./.ssh/id_rsa.pub "-p 10022 root@192.168.1.14"
+ssh-copy-id -i ./.ssh/id_rsa.pub "-p 10022 root@192.168.1.15"
+ssh-copy-id -i ./.ssh/id_rsa.pub "-p 10022 root@192.168.1.16"
+ssh-copy-id -i ./.ssh/id_rsa.pub "-p 10022 root@192.168.1.17"
+ssh-copy-id -i ./.ssh/id_rsa.pub "-p 10022 root@192.168.1.18"
+ssh-copy-id -i ./.ssh/id_rsa.pub "-p 10022 root@192.168.1.19"
+ssh-copy-id -i ./.ssh/id_rsa.pub "-p 10022 root@192.168.1.20"
+（2）运行01copynmon.sh，将nmon从服务器A拷贝到10台服务器。
+#!/bin/bash
+iplist=(192.168.1.11 192.168.1.12 192.168.1.13 192.168.1.14 192.168.1.15 192.168.1.16 192.168.1.17 192.168.1.18 192.168.1.19 192.168.1.20)
+for ip in ${iplist[*]}
+do
+ scp -P 10022 /root/nmon root@$ip:/root/ &
+ echo $ip
+done
+（3）运行02mkdirten.sh，在10台服务器的/root/目录下分别创建nmon-test-result目录，并将nmon移动到此目录下。
+#!/bin/bash
+iplist=(192.168.1.11 192.168.1.12 192.168.1.13 192.168.1.14 192.168.1.15 192.168.1.16 192.168.1.17 192.168.1.18 192.168.1.19 192.168.1.20)
+for ip in ${iplist[*]}
+do
+ ssh -p 10022 root@$ip "cd;mkdir nmon-test-result;mv nmon nmon-test-result/;exit;"&
+ echo $ip
+done
+（4）运行03runnmon.sh，在10台服务器的/root/nmon-test-result/下，分别创建project050目录，并运行nmon，将结果保存在project050目录下。
+#!/bin/bash
+iplist=(192.168.1.11 192.168.1.12 192.168.1.13 192.168.1.14 192.168.1.15 192.168.1.16 192.168.1.17 192.168.1.18 192.168.1.19 192.168.1.20)
+for ip in ${iplist[*]}
+do
+ ssh -p 10022 root@$ip "cd /root/nmon-test-result/;mkdir project050;/root/nmon-test-result/nmon -s1 -c300 -f -m /root/nmon-test-result/project050/;exit;"&
+ echo $ip
+done
+（5）运行04ps.sh，查看在10台服务器上是否nmon都启动成功。
+#!/bin/bash
+iplist=(192.168.1.11 192.168.1.12 192.168.1.13 192.168.1.14 192.168.1.15 192.168.1.16 192.168.1.17 192.168.1.18 192.168.1.19 192.168.1.20)
+for ip in ${iplist[*]}
+do
+ ssh -p 10022 root@$ip "hostname;ps -ef|grep nmon;exit;"&
+ echo $ip
+done
+（6）运行05mkdir.sh，在服务器A上面建立10个目录，分别用来存放10台服务器的监控结果。
+#!/bin/bash
+iplist=(192.168.1.11 192.168.1.12 192.168.1.13 192.168.1.14 192.168.1.15 192.168.1.16 192.168.1.17 192.168.1.18 192.168.1.19 192.168.1.20)
+for ip in ${iplist[*]}
+do
+ mkdir nmon-test-result-$ip
+ echo $ip
+done
+（7）运行06copydir.sh，将10台服务器上的监控结果分别拷贝到服务器A上面的相应目录中。
+#!/bin/bash
+iplist=(192.168.1.11 192.168.1.12 192.168.1.13 192.168.1.14 192.168.1.15 192.168.1.16 192.168.1.17 192.168.1.18 192.168.1.19 192.168.1.20)
+for ip in ${iplist[*]}
+do
+ scp -P 10022 -r root@$ip:/root/nmon-test-result/chuanglan050 /root/nmon-test-result-$ip &
+ echo $ip
+done

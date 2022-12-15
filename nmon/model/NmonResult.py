@@ -6,8 +6,8 @@
 @QQ: 1525053461
 @Mail: ishuangjin@foxmail.com
 @Date: 2022-11-30 09:57:13
-@LastEditTime: 2022-12-01 09:59:04
-@FilePath: \\Git\\MyScript\\tct压测\\nmon\\NmonResult.py
+@LastEditTime: 2022-12-12 14:40:22
+@FilePath: \\Github\\MyScript\\nmon_auto\\nmon\\NmonResult.py
 @Copyright (c) 2022 by ishuangjin, All Rights Reserved.
 @Description: 
 '''
@@ -272,5 +272,6 @@ class NmonResult(object):
 
 
 if __name__ == "__main__":
-    nmon = NmonResult(r'G:\Git\MyScript\tct压测\nmon\local_data\192.168.77.90\i-o6lll6p5_221129_1110.nmon')
+    ress = ['D:\\Github\\MyScript\\nmon_auto\\nmon\\data\\nmon_result_file']
+    nmon = NmonResult(ress)
     nmon.get_file()

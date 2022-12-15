@@ -7,10 +7,13 @@ import logging
 import pandas as pd
 import json
 import pymysql
+import random
 
 # 租户端
-secret_id = "52H5f9G2e7aOc4e9Qd859fb4F5ReTe06"
-secret_key = "QeSa56PbafP8O96L0LceN278aI5326Te"
+# secret_id = "52H5f9G2e7aOc4e9Qd859fb4F5ReTe06"
+# secret_key = "QeSa56PbafP8O96L0LceN278aI5326Te"
+secret_id = "b5771VXCcW8bR4O7f8F3Td1ebb7da61K"
+secret_key = "35BcZcLGaa9U7f3cYcGQ8cE5H513aae2"
 
 # 接口基础配置
 service = "tsf"
@@ -132,7 +135,7 @@ def create_random_task(task_start=1, task_end=None, task_name_start="random_task
         task_name = task_name_start + str(num)
         params = {
             "action": "CreateTask",
-            "serviceType": "tsf",
+            "serviceType": "tct",
             "regionId": 1,
             "data": {
                 "Version": "2018-03-26",
@@ -174,52 +177,40 @@ def create_shard_task(task_start=1, task_end=None, task_name_start="shard_task")
         task_name = task_name_start + str(num)
         params = {
             "action": "CreateTask",
-            "serviceType": "tsf",
+            "serviceType": "tct",
             "regionId": 1,
             "data": {
-                "Version":
-                "2018-03-26",
-                "TaskName":
-                task_name,
-                "GroupId":
-                "group-6yog6evl",
-                "TaskType":
-                "java",
-                "TaskContent":
-                "com.tencent.cloud.task.SimpleShardExecutableTask",
-                "ExecuteType":
-                "shard",
-                "TimeOut":
-                900000,
-                "SuccessOperator":
-                "GTE",
-                "SuccessRatio":
-                100,
+                "Version": "2018-03-26",
+                "TaskName": task_name,
+                "GroupId": "group-6yog6evl",
+                "TaskType": "java",
+                "TaskContent": "com.tencent.cloud.task.SimpleShardExecutableTask",
+                "ExecuteType": "shard",
+                "TimeOut": 900000,
+                "SuccessOperator": "GTE",
+                "SuccessRatio": 100,
                 "TaskRule": {
                     "RuleType": "Cron",
                     "Expression": "0 0/5 * * * ?"
                 },
-                "ShardArguments": [{
-                    "ShardKey": 1,
-                    "ShardValue": "a"
-                }, {
-                    "ShardKey": 2,
-                    "ShardValue": "b"
-                }, {
-                    "ShardKey": 3,
-                    "ShardValue": "c"
-                }],
-                "TaskArgument":
-                "",
+                # "ShardArguments": [{
+                #     "ShardKey": 1,
+                #     "ShardValue": "a"
+                # }, {
+                #     "ShardKey": 2,
+                #     "ShardValue": "b"
+                # }, {
+                #     "ShardKey": 3,
+                #     "ShardValue": "c"
+                # }],
+                "ShardArguments": [],
+                "TaskArgument": "",
                 "ProgramIdList": [],
-                "RetryCount":
-                0,
-                "RetryInterval":
-                0,
-                "ShardCount":
-                3,
+                "RetryCount": 0,
+                "RetryInterval": 0,
+                "ShardCount": random.randint(10, 30),
                 "AdvanceSettings": {
-                    "SubTaskConcurrency": 2
+                    "SubTaskConcurrency": 10
                 }
             }
         }
@@ -257,7 +248,7 @@ def alter_task(func, task_start=0, task_count=None):
         task_id = task_id_tuple[0]
         task_name = task_id_tuple[1]
         print(task_id)
-        params = {"action": func, "serviceType": "tsf", "regionId": 1, "data": {"Version": "2018-03-26", "TaskId": task_id}}
+        params = {"action": func, "serviceType": "tct", "regionId": 1, "data": {"Version": "2018-03-26", "TaskId": task_id}}
         resp = api_post(action="DescribeReleasedConfig", params=params)
         print("正在{}任务：{}".format(func, task_name))
         print(resp)
@@ -290,7 +281,7 @@ def alter_task_flow(func, task_start=0, task_count=None):
     for task_id_tuple in task_tuple:
         task_id = task_id_tuple[0]
         task_name = task_id_tuple[1]
-        params = {"action": func, "serviceType": "tsf", "regionId": 1, "data": {"Version": "2018-03-26", "FlowId": task_id}}
+        params = {"action": func, "serviceType": "tct", "regionId": 1, "data": {"Version": "2018-03-26", "FlowId": task_id}}
         resp = api_post(action="DescribeReleasedConfig", params=params)
         print("正在{}任务：{}".format(func, task_name))
         print(resp)
@@ -364,7 +355,7 @@ def create_task_flow(task_start=0, task_count=0, limit=20, flow_name_start="flow
             flow_name = flow_name_start + str(page_index + 1)
         params = {
             "action": "CreateTaskFlow",
-            "serviceType": "tsf",
+            "serviceType": "tct",
             "regionId": 1,
             "data": {
                 "Version": "2018-03-26",
@@ -386,11 +377,11 @@ def main():
     # create_random_task(1, 100)
 
     # 创建分片任务 shard_task1、shard_task2、...shard_task100
-    # create_shard_task(1, 100)
+    # create_shard_task(1, 2000)
 
     # DisableTask 停用任务，EnableTask 启用任务，DeleteTask 删除任务
     # 改变第1条数据起，一共100条数据的状态为启用
-    alter_task("EnableTask", 0, 100)
+    alter_task("EnableTask", 0, 2000)
 
     # DisableTaskFlow 停用工作流，EnableTaskFlow 启用工作流，DeleteTaskFlow 删除工作流
     # 改变第200条数据起，一共100条数据的状态为停止

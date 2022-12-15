@@ -6,24 +6,16 @@
 @QQ: 1525053461
 @Mail: ishuangjin@foxmail.com
 @Date: 2022-11-30 09:54:57
-@LastEditTime: 2022-11-30 21:07:29
-@FilePath: \\Git\\MyScript\\tct压测\\nmon\\SSHSokcet.py
+@LastEditTime: 2022-12-15 14:25:43
+@FilePath: \\Github\\MyScript\\nmon\\model\\SSHSokcet.py
 @Copyright (c) 2022 by ishuangjin, All Rights Reserved.
-@Description: 
+@Description: SSH 连接远程服务器下载指定文件夹或文件
 '''
-# -*- coding:utf-8 -*-
-
-# create: 2019-07-29
-# author:zengln
-# desc: SSH 连接远程服务器下载指定文件夹或文件
-import sys
-
-sys.path.append(r"G:\Git\MyScript\tct压测")
 
 import paramiko
 import os
 from stat import S_ISDIR
-from nmon.NmonLog import log
+from model.NmonLog import log
 
 
 class sshSocket(object):
