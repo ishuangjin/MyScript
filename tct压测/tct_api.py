@@ -8,10 +8,11 @@ import pandas as pd
 import json
 import pymysql
 import random
+from concurrent.futures import ThreadPoolExecutor
+import threading
+import time
 
 # 租户端
-# secret_id = "52H5f9G2e7aOc4e9Qd859fb4F5ReTe06"
-# secret_key = "QeSa56PbafP8O96L0LceN278aI5326Te"
 secret_id = "b5771VXCcW8bR4O7f8F3Td1ebb7da61K"
 secret_key = "35BcZcLGaa9U7f3cYcGQ8cE5H513aae2"
 
@@ -122,7 +123,7 @@ def get_task_id_name(sql):
     return sql_results
 
 
-def create_random_task(task_start=1, task_end=None, task_name_start="random_task"):
+def create_random_task(task_start=1, task_end=1, task_name_start="random_task"):
     """
     创建执行方式为随机的任务
     :param task_name_start:任务名字前缀
@@ -244,14 +245,23 @@ def alter_task(func, task_start=0, task_count=None):
             sql = ""
             print("请检查sql语句，DisableTaskFlow 停用任务，EnableTaskFlow 启用任务，DeleteTaskFlow 删除任务")
     task_tuple = get_task_id_name(sql)
+    # 创建一个包含20条线程的线程池
+    pool = ThreadPoolExecutor(max_workers=20)
+
     for task_id_tuple in task_tuple:
-        task_id = task_id_tuple[0]
-        task_name = task_id_tuple[1]
-        print(task_id)
-        params = {"action": func, "serviceType": "tct", "regionId": 1, "data": {"Version": "2018-03-26", "TaskId": task_id}}
-        resp = api_post(action="DescribeReleasedConfig", params=params)
-        print("正在{}任务：{}".format(func, task_name))
-        print(resp)
+        # 向线程池提交一个task
+        pool.submit(do_alter_task, func, task_id_tuple)
+
+
+def do_alter_task(func, task_id_tuple):
+    task_id = task_id_tuple[0]
+    task_name = task_id_tuple[1]
+    print(task_id)
+    params = {"action": func, "serviceType": "tct", "regionId": 1, "data": {"Version": "2018-03-26", "TaskId": task_id}}
+    resp = api_post(action="DescribeReleasedConfig", params=params)
+    print("正在{}任务：{}".format(func, task_name))
+    print(resp)
+    print(threading.current_thread().name)
 
 
 def alter_task_flow(func, task_start=0, task_count=None):
@@ -381,7 +391,7 @@ def main():
 
     # DisableTask 停用任务，EnableTask 启用任务，DeleteTask 删除任务
     # 改变第1条数据起，一共100条数据的状态为启用
-    alter_task("EnableTask", 0, 2000)
+    alter_task("DisableTask", 0, 2000)
 
     # DisableTaskFlow 停用工作流，EnableTaskFlow 启用工作流，DeleteTaskFlow 删除工作流
     # 改变第200条数据起，一共100条数据的状态为停止
