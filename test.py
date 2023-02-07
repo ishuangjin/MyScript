@@ -1,35 +1,19 @@
-#!/usr/bin/env python3
-# encoding:utf-8
-'''
-@Author: ishuangjin
-@WebSite: blog.ishuangjin.cn
-@QQ: 1525053461
-@Mail: ishuangjin@foxmail.com
-@Date: 2022-09-21 18:22:23
-@LastEditTime: 2022-12-15 18:02:47
-@FilePath: \\Github\\MyScript\\test.py
-@Copyright (c) 2022 by ishuangjin, All Rights Reserved.
-@Description:
-'''
-import threading
-import time
-from concurrent.futures import ThreadPoolExecutor
+import argparse  # 步骤一
 
 
-# 定义一个准备作为线程任务的函数
-def action(max):
-    my_sum = 0
-    for i in range(max):
-        print(threading.current_thread().name + '  ' + str(i))
-        my_sum += i
-    return my_sum
+def parse_args():
+    """
+    :return:进行参数的解析
+    """
+    description = "TCT任务控制台"  # 步骤二
+    parser = argparse.ArgumentParser(
+        description=description)  # 这些参数都有默认值，当调用parser.print_help()或者运行程序时由于参数不正确(此时python解释器其实也是调用了pring_help()方法)时，
+    # 会打印这些描述信息，一般只需要传递description参数，如上。
+    parser.add_argument('type', type=str, help='task/flow(类型：任务/工作流)')  # 步骤三，后面的help是我的描述
+    args = parser.parse_args()  # 步骤四
+    return args
 
 
-# 创建一个包含4条线程的线程池
-with ThreadPoolExecutor(max_workers=4) as pool:
-    # 使用线程执行map计算
-    # 后面元组有3个元素，因此程序启动3条线程来执行action函数
-    results = pool.map(action, (50, 100, 150))
-    print('--------------')
-    for r in results:
-        print(r)
+if __name__ == '__main__':
+    args = parse_args()
+    print(args.type)  # 直接这么获取即可。

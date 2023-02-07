@@ -1,34 +1,18 @@
-def alter_task_flow(func, task_start=0, task_count=None):
-    """
-    修改工作流状态
-    :param func: DisableTaskFlow 停用，EnableTaskFlow 启用，DeleteTaskFlow 删除
-    :param task_start: 取第task_start个开始
-    :param task_count: 共task_count个工作流
-    :return: None
-    """
-    if task_start and task_count:
-        if func == "DeleteTaskFlow":
-            alter_task("DisableTask", task_start, task_count)
-        sql = """SELECT `id`,flow_name FROM task_flow limit {},{};""".format(task_start, task_count)
-    else:
-        if func == "EnableTaskFlow":
-            sql = """SELECT `id`,flow_name FROM task_flow WHERE `state`='DISABLED';"""
-        elif func == "DisableTaskFlow":
-            sql = """SELECT `id`,flow_name FROM task_flow WHERE `state`='ENABLED';"""
-        elif func == "DeleteTaskFlow":
-            alter_task("DisableTask")
-            sql = """SELECT `id`,flow_name FROM task_flow WHERE `state`='DISABLED';"""
-        else:
-            sql = ""
-            print("请检查sql语句，DisableTaskFlow 停用工作流，EnableTaskFlow 启用工作流，DeleteTaskFlow 删除工作流")
-    task_tuple = get_task_id_name(sql)
-    for task_id_tuple in task_tuple:
-        task_id = task_id_tuple[0]
-        task_name = task_id_tuple[1]
-        params = {"action": func, "serviceType": "tct", "regionId": 1, "data": {"Version": "2018-03-26", "FlowId": task_id}}
-        resp = api_post(action="DescribeReleasedConfig", params=params)
-        print("正在{}任务：{}".format(func, task_name))
-        print(resp)
+#!/usr/bin/env python3
+# encoding:utf-8
+'''
+@Author: ishuangjin
+@WebSite: blog.ishuangjin.cn
+@QQ: 1525053461
+@Mail: ishuangjin@foxmail.com
+@Date: 2022-12-15 17:29:22
+@LastEditTime: 2023-01-03 15:21:51
+@FilePath: \\Github\\MyScript\\tct压测\\control_tct\\model\\FlowControl.py
+@Copyright (c) 2023 by ishuangjin, All Rights Reserved.
+@Description:
+'''
+from model.ApiPost import api_post
+from model.GetSql import get_task_id_name
 
 
 def create_task_flow(task_start=0, task_count=0, limit=20, flow_name_start="flow_test"):
@@ -113,3 +97,36 @@ def create_task_flow(task_start=0, task_count=0, limit=20, flow_name_start="flow
             }
         }
         create_flow(params=params, flow_name=flow_name)
+
+
+def alter_task_flow(func, task_start=0, task_count=None):
+    """
+    修改工作流状态
+    :param func: DisableTaskFlow 停用，EnableTaskFlow 启用，DeleteTaskFlow 删除
+    :param task_start: 取第task_start个开始
+    :param task_count: 共task_count个工作流
+    :return: None
+    """
+    if task_start and task_count:
+        if func == "DeleteTaskFlow":
+            alter_task_flow("DisableTask", task_start, task_count)
+        sql = """SELECT `id`,flow_name FROM task_flow limit {},{};""".format(task_start, task_count)
+    else:
+        if func == "EnableTaskFlow":
+            sql = """SELECT `id`,flow_name FROM task_flow WHERE `state`='DISABLED';"""
+        elif func == "DisableTaskFlow":
+            sql = """SELECT `id`,flow_name FROM task_flow WHERE `state`='ENABLED';"""
+        elif func == "DeleteTaskFlow":
+            alter_task_flow("DisableTask")
+            sql = """SELECT `id`,flow_name FROM task_flow WHERE `state`='DISABLED';"""
+        else:
+            sql = ""
+            print("请检查sql语句，DisableTaskFlow 停用工作流，EnableTaskFlow 启用工作流，DeleteTaskFlow 删除工作流")
+    task_tuple = get_task_id_name(sql)
+    for task_id_tuple in task_tuple:
+        task_id = task_id_tuple[0]
+        task_name = task_id_tuple[1]
+        params = {"action": func, "serviceType": "tct", "regionId": 1, "data": {"Version": "2018-03-26", "FlowId": task_id}}
+        resp = api_post(action="DescribeReleasedConfig", params=params)
+        print("正在{}任务：{}".format(func, task_name))
+        print(resp)

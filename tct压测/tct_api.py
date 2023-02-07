@@ -17,7 +17,7 @@ secret_id = "b5771VXCcW8bR4O7f8F3Td1ebb7da61K"
 secret_key = "35BcZcLGaa9U7f3cYcGQ8cE5H513aae2"
 
 # 接口基础配置
-service = "tsf"
+service = "192"
 host = "192.168.77.2"
 port = 80
 endpoint = "http://" + host
@@ -302,14 +302,15 @@ def alter_multi_task(func, task_start=0, task_count=None):
     for i in range(0, page_limit):
         start_off_set = i * sub_count
         end_off_set = ((i + 1)) * sub_count
-        end_off_set = end_off_set if end_off_set <= start_off_set else task_ids_size
+        end_off_set = end_off_set if end_off_set <= task_ids_size else task_ids_size
         res_list.append(task_ids[start_off_set:end_off_set])
 
     # 创建一个包含20条线程的线程池
-    pool = ThreadPoolExecutor(max_workers=20)
+    # pool = ThreadPoolExecutor(max_workers=20)
     for sub_task_ids in res_list:
-        # 向线程池提交一个task
-        pool.submit(do_alter_multi_task, func, sub_task_ids)
+        do_alter_multi_task(func, sub_task_ids)
+    # 向线程池提交一个task
+    #     pool.submit(do_alter_multi_task, func, sub_task_ids)
 
 
 def do_alter_multi_task(func, sub_task_ids):
@@ -447,11 +448,11 @@ def main():
 
     # DisableTask 停用任务，EnableTask 启用任务，DeleteTask 删除任务
     # 改变第1条数据起，一共100条数据的状态为启用
-    # alter_task("DisableTask", 0, 10000)
+    alter_task("EnableTask", 0, 1)
 
     # DisableMultipleTask 停用任务，EnableMultipleTask 启用任务，DeleteMultipleTask 删除任务
     # 改变第1条数据起，一共100条数据的状态为启用
-    alter_multi_task("DisableMultipleTask", 0, 100)
+    # alter_multi_task("EnableMultipleTask", 0, 1)
 
     # DisableTaskFlow 停用工作流，EnableTaskFlow 启用工作流，DeleteTaskFlow 删除工作流
     # 改变第200条数据起，一共100条数据的状态为停止

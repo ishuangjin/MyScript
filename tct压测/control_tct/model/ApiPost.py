@@ -6,24 +6,29 @@
 @QQ: 1525053461
 @Mail: ishuangjin@foxmail.com
 @Date: 2022-12-15 17:26:42
-@LastEditTime: 2022-12-15 17:27:58
-@FilePath: \\Github\\MyScript\\tct压测\\control_tct\\setHeader.py
+@LastEditTime: 2023-01-03 14:43:44
+@FilePath: \\Github\\MyScript\\tct压测\\control_tct\\model\\SetHeader.py
 @Copyright (c) 2022 by ishuangjin, All Rights Reserved.
 @Description:
 '''
 # -*- coding: utf-8 -*-
-import argparse
-import hashlib, hmac, json, os, sys, time
+# import argparse
+import hashlib
+import hmac
+import json
+# import os
+# import sys
+import time
 from datetime import datetime
 import requests
 import logging
-import pandas as pd
-import json
-import pymysql
-import random
-from concurrent.futures import ThreadPoolExecutor
-import threading
-import time
+# import pandas as pd
+# import json
+# import pymysql
+# import random
+# from concurrent.futures import ThreadPoolExecutor
+# import threading
+# import time
 
 # 租户端
 secret_id = "b5771VXCcW8bR4O7f8F3Td1ebb7da61K"
@@ -106,4 +111,3 @@ def api_post(action, params):
     r = requests.post(url=url, headers=headers, data=json.dumps(params))
 
     return r.text
-
