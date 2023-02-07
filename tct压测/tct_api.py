@@ -166,7 +166,7 @@ def create_random_task(task_start=1, task_end=1, task_name_start="random_task"):
         print(resp)
 
 
-def create_shard_task(task_start=1, task_end=None, task_name_start="shard_task"):
+def create_shard_task(task_start=1, task_end=100, task_name_start="shard_task"):
     """
     创建分片任务
     :param task_name_start:任务名字前缀
@@ -174,6 +174,7 @@ def create_shard_task(task_start=1, task_end=None, task_name_start="shard_task")
     :param task_end:任务名字结束
     :return:None
     """
+
     for num in range(int(task_start), int(task_end) + 1):
         task_name = task_name_start + str(num)
         params = {
@@ -185,9 +186,9 @@ def create_shard_task(task_start=1, task_end=None, task_name_start="shard_task")
                 "TaskName": task_name,
                 "GroupId": "group-6yog6evl",
                 "TaskType": "java",
-                "TaskContent": "com.tencent.cloud.task.SimpleShardExecutableTask",
+                "TaskContent": "com.tencent.cloud.task.SimpleShardExecutableTask" + str(random.randint(1, 30)),
                 "ExecuteType": "shard",
-                "TimeOut": 900000,
+                "TimeOut": 300000,
                 "SuccessOperator": "GTE",
                 "SuccessRatio": 100,
                 "TaskRule": {
@@ -209,9 +210,10 @@ def create_shard_task(task_start=1, task_end=None, task_name_start="shard_task")
                 "ProgramIdList": [],
                 "RetryCount": 0,
                 "RetryInterval": 0,
-                "ShardCount": random.randint(10, 30),
+                # "ShardCount": random.randint(10, 30),
+                "ShardCount": 20,
                 "AdvanceSettings": {
-                    "SubTaskConcurrency": 10
+                    "SubTaskConcurrency": 100
                 }
             }
         }
@@ -235,16 +237,20 @@ def alter_task(func, task_start=0, task_count=None):
         sql = """SELECT `id`,task_name FROM task_record limit {},{};""".format(task_start, task_count)
     else:
         if func == "EnableTask":
-            sql = """SELECT `id`,task_name FROM task_record WHERE `state`='DISABLED';"""
+            sql = """SELECT `id`,task_name FROM task_record WHERE `state`='DISABLED' limit {},{};""".format(
+                task_start, task_count)
         elif func == "DisableTask":
-            sql = """SELECT `id`,task_name FROM task_record WHERE `state`='ENABLED';"""
+            sql = """SELECT `id`,task_name FROM task_record WHERE `state`='ENABLED'  limit {},{};""".format(
+                task_start, task_count)
         elif func == "DeleteTask":
             alter_task("DisableTask")
-            sql = """SELECT `id`,task_name FROM task_record WHERE `state`='DISABLED';"""
+            sql = """SELECT `id`,task_name FROM task_record WHERE `state`='DISABLED'  limit {},{};""".format(
+                task_start, task_count)
         else:
             sql = ""
             print("请检查sql语句，DisableTaskFlow 停用任务，EnableTaskFlow 启用任务，DeleteTaskFlow 删除任务")
     task_tuple = get_task_id_name(sql)
+
     # 创建一个包含20条线程的线程池
     pool = ThreadPoolExecutor(max_workers=20)
 
@@ -260,6 +266,56 @@ def do_alter_task(func, task_id_tuple):
     params = {"action": func, "serviceType": "tct", "regionId": 1, "data": {"Version": "2018-03-26", "TaskId": task_id}}
     resp = api_post(action="DescribeReleasedConfig", params=params)
     print("正在{}任务：{}".format(func, task_name))
+    print(resp)
+    print(threading.current_thread().name)
+
+
+def alter_multi_task(func, task_start=0, task_count=None):
+    """
+    修改任务状态，task_count=0，修改全部任务
+    :param func:DisableMultiTask 停用，EnableMultiTask 启用，DeleteMultiTask 删除
+    :param task_start: 数据库task_record表第几条数据开始，默认为0，第1条数据
+    :param task_count: 数据库task_record表取条数据，默认为0，取全部数据
+    :return: None
+    """
+    if func == "EnableMultipleTask":
+        sql = """SELECT `id`,task_name FROM task_record WHERE `state`='DISABLED' limit {},{};""".format(task_start, task_count)
+    elif func == "DisableMultipleTask":
+        sql = """SELECT `id`,task_name FROM task_record WHERE `state`='ENABLED' limit {},{};""".format(task_start, task_count)
+    elif func == "DeleteMultipleTask":
+        alter_multi_task("DisableMultipleTask")
+        sql = """SELECT `id`,task_name FROM task_record WHERE `state`='DISABLED' limit {},{};""".format(task_start, task_count)
+    else:
+        sql = ""
+        print("请检查sql语句，DisableTaskFlow 停用任务，EnableTaskFlow 启用任务，DeleteTaskFlow 删除任务")
+    task_tuple = get_task_id_name(sql)
+
+    task_ids = []
+    for i in task_tuple:
+        task_ids.append(i[0])
+
+    sub_count = 1000
+    task_ids_size = len(task_ids)
+    page_limit = int(task_ids_size / sub_count)
+    page_limit += 0 if ((task_ids_size % sub_count) == 0) else 1
+    res_list = []
+    for i in range(0, page_limit):
+        start_off_set = i * sub_count
+        end_off_set = ((i + 1)) * sub_count
+        end_off_set = end_off_set if end_off_set <= start_off_set else task_ids_size
+        res_list.append(task_ids[start_off_set:end_off_set])
+
+    # 创建一个包含20条线程的线程池
+    pool = ThreadPoolExecutor(max_workers=20)
+    for sub_task_ids in res_list:
+        # 向线程池提交一个task
+        pool.submit(do_alter_multi_task, func, sub_task_ids)
+
+
+def do_alter_multi_task(func, sub_task_ids):
+    params = {"action": func, "serviceType": "tct", "regionId": 1, "data": {"Version": "2018-03-26", "Ids": sub_task_ids}}
+    resp = api_post(action="DescribeReleasedConfig", params=params)
+    print("正在{}任务：{}".format(func, sub_task_ids))
     print(resp)
     print(threading.current_thread().name)
 
@@ -387,11 +443,15 @@ def main():
     # create_random_task(1, 100)
 
     # 创建分片任务 shard_task1、shard_task2、...shard_task100
-    # create_shard_task(1, 2000)
+    # create_shard_task(9001, 10000)
 
     # DisableTask 停用任务，EnableTask 启用任务，DeleteTask 删除任务
     # 改变第1条数据起，一共100条数据的状态为启用
-    alter_task("DisableTask", 0, 2000)
+    # alter_task("DisableTask", 0, 10000)
+
+    # DisableMultipleTask 停用任务，EnableMultipleTask 启用任务，DeleteMultipleTask 删除任务
+    # 改变第1条数据起，一共100条数据的状态为启用
+    alter_multi_task("DisableMultipleTask", 0, 100)
 
     # DisableTaskFlow 停用工作流，EnableTaskFlow 启用工作流，DeleteTaskFlow 删除工作流
     # 改变第200条数据起，一共100条数据的状态为停止

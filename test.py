@@ -6,14 +6,14 @@
 @QQ: 1525053461
 @Mail: ishuangjin@foxmail.com
 @Date: 2022-09-21 18:22:23
-@LastEditTime: 2022-12-15 17:06:00
+@LastEditTime: 2022-12-15 18:02:47
 @FilePath: \\Github\\MyScript\\test.py
 @Copyright (c) 2022 by ishuangjin, All Rights Reserved.
 @Description:
 '''
-from concurrent.futures import ThreadPoolExecutor
 import threading
 import time
+from concurrent.futures import ThreadPoolExecutor
 
 
 # 定义一个准备作为线程任务的函数
