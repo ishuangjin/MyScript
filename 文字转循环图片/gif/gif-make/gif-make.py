@@ -1,9 +1,23 @@
+#!/usr/bin/env python3
+# encoding:utf-8
+'''
+@Author: ishuangjin
+@WebSite: blog.ishuangjin.cn
+@QQ: 1525053461
+@Mail: ishuangjin@foxmail.com
+@Date: 2022-08-08 11:06:56
+@LastEditTime: 2023-02-09 14:14:19
+@FilePath: \\Github\\MyScript\\文字转循环图片\\gif\\gif-make\\gif-make.py
+@Copyright (c) 2023 by ${git_name}, All Rights Reserved.
+@Description:
+'''
 # coding: utf-8
 
 # # 完整代码如下
 import imageio
 import os
 import sys
+
 
 def func(DURATION):
     # 获取当前的工作路径
@@ -14,7 +28,7 @@ def func(DURATION):
     png_list = file_list.copy()
     # 移除结尾不是png的图片，只保留结尾都是png的图片
     for file in file_list:
-        if file[-3:]!= "jpg":
+        if file[-3:] != "jpg":
             png_list.remove(file)
     # 将图片中的数字，升序排列
     png_list.sort(key=lambda x: float(x[:-4]))
@@ -26,8 +40,9 @@ def func(DURATION):
     # 将图片保存为gif图，设置了时间
     gif_path = os.path.join(path, "my_gif1.gif")
     imageio.mimsave(gif_path, frames, 'GIF', duration=DURATION)
-func(0.5)
 
+
+func(0.5)
 
 # # # 每一步的详细演示过程
 #

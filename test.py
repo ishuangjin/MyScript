@@ -1,19 +1,29 @@
-import argparse  # 步骤一
+import configparser
 
+# -实例化configParser对象
+config = configparser.ConfigParser()
+# -read读取ini文件
+config.read(r'D:\Github\MyScript\baidu翻译api\config\config1.ini', encoding='GB18030')
+# -sections得到所有的section，并以列表的形式返回
+print('sections:' , ' ' , config.sections())
 
-def parse_args():
-    """
-    :return:进行参数的解析
-    """
-    description = "TCT任务控制台"  # 步骤二
-    parser = argparse.ArgumentParser(
-        description=description)  # 这些参数都有默认值，当调用parser.print_help()或者运行程序时由于参数不正确(此时python解释器其实也是调用了pring_help()方法)时，
-    # 会打印这些描述信息，一般只需要传递description参数，如上。
-    parser.add_argument('type', type=str, help='task/flow(类型：任务/工作流)')  # 步骤三，后面的help是我的描述
-    args = parser.parse_args()  # 步骤四
-    return args
+# -options(section)得到该section的所有option
+print('options:' ,' ' , config.options('config'))
 
+# -items（section）得到该section的所有键值对
+print('items:' ,' ' ,config.items('session1'))
 
-if __name__ == '__main__':
-    args = parse_args()
-    print(args.type)  # 直接这么获取即可。
+# -get(section,option)得到section中option的值，返回为string类型
+print('get:' ,' ' , config.get('session2', 'option4'))
+
+# -getint(section,option)得到section中的option的值，返回为int类型
+print('getint:' ,' ' ,config.getint('session1', 'option2'))
+print('getfloat:' ,' ' , config.getfloat('session1', 'option3'))
+print('getboolean:' ,'  ', config.getboolean('session1', 'option1'))
+"""
+首先得到配置文件的所有分组，然后根据分组逐一展示所有
+"""
+for sections in config.sections():
+    for items in config.items(sections):
+        print(items)
+
