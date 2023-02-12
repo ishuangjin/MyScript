@@ -6,7 +6,7 @@
 @QQ: 1525053461
 @Mail: ishuangjin@foxmail.com
 @Date: 2022-11-30 09:57:13
-@LastEditTime: 2022-12-01 09:59:04
+@LastEditTime: 2022-12-09 11:47:57
 @FilePath: \\Git\\MyScript\\tct压测\\nmon\\NmonResult.py
 @Copyright (c) 2022 by ishuangjin, All Rights Reserved.
 @Description: 
@@ -20,6 +20,7 @@
 import xlrd
 import xlwt
 import re
+import pandas as pd
 
 from xlutils.copy import copy
 
@@ -43,6 +44,7 @@ class NmonResult(object):
             raise RuntimeError("传入的解析文件不能为空, 必须为字符串或者字符串数组")
 
         self.__workbook = xlrd.open_workbook(self.__nFiles[0])
+        print(self.__workbook)
 
     '''
         提供简单的提取数据需求
@@ -272,5 +274,5 @@ class NmonResult(object):
 
 
 if __name__ == "__main__":
-    nmon = NmonResult(r'G:\Git\MyScript\tct压测\nmon\local_data\192.168.77.90\i-o6lll6p5_221129_1110.nmon')
+    nmon = NmonResult(r'f:\Git\MyScript\tct压测\nmon\local_data\192.168.77.90\i-o6lll6p5_221129_1110.nmon')
     nmon.get_file()

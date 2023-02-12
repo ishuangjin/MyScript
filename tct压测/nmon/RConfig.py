@@ -6,7 +6,7 @@
 @QQ: 1525053461
 @Mail: ishuangjin@foxmail.com
 @Date: 2022-11-30 09:57:23
-@LastEditTime: 2022-12-01 09:39:02
+@LastEditTime: 2022-12-09 11:26:01
 @FilePath: \\Git\\MyScript\\tct压测\\nmon\\RConfig.py
 @Copyright (c) 2022 by ishuangjin, All Rights Reserved.
 @Description: 
@@ -24,8 +24,8 @@ class Config(object):
 
     def __init__(self):
         self.conf = configparser.ConfigParser()
-        if os.path.exists(r"G:\Git\MyScript\tct压测\nmon\config\config.ini"):
-            self.conf.read(r"G:\Git\MyScript\tct压测\nmon\config\config.ini", encoding="utf-8-sig")
+        if os.path.exists(r"F:\Git\MyScript\tct压测\nmon\config\config.ini"):
+            self.conf.read(r"F:\Git\MyScript\tct压测\nmon\config\config.ini", encoding="utf-8-sig")
         else:
             raise NmonException("配置文件不存在")
 

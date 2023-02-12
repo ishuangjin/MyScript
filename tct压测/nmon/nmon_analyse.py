@@ -6,15 +6,14 @@
 @QQ: 1525053461
 @Mail: ishuangjin@foxmail.com
 @Date: 2022-11-30 09:57:37
-@LastEditTime: 2022-12-01 09:41:08
+@LastEditTime: 2022-12-09 11:09:58
 @FilePath: \\Git\\MyScript\\tct压测\\nmon\\nmon_analyse.py
 @Copyright (c) 2022 by ishuangjin, All Rights Reserved.
 @Description: 
 '''
-# -*- coding:utf-8 -*-
 import sys
 
-sys.path.append(r"G:\Git\MyScript\tct压测")
+sys.path.append(r"F:\Git\MyScript\tct压测")
 
 from nmon import ExcelMicro
 from nmon import NmonResult
@@ -82,5 +81,5 @@ try:
 except Exception:
     error_msg = traceback.format_exc()
     log.error(error_msg)
-    # time.sleep(1)
-    # input("按任意键退出程序:")
+    time.sleep(1)
+    input("按任意键退出程序:")

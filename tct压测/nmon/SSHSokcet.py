@@ -6,20 +6,18 @@
 @QQ: 1525053461
 @Mail: ishuangjin@foxmail.com
 @Date: 2022-11-30 09:54:57
-@LastEditTime: 2022-11-30 21:07:29
+@LastEditTime: 2022-12-09 11:42:02
 @FilePath: \\Git\\MyScript\\tct压测\\nmon\\SSHSokcet.py
 @Copyright (c) 2022 by ishuangjin, All Rights Reserved.
 @Description: 
 '''
-# -*- coding:utf-8 -*-
 
 # create: 2019-07-29
 # author:zengln
 # desc: SSH 连接远程服务器下载指定文件夹或文件
 import sys
 
-sys.path.append(r"G:\Git\MyScript\tct压测")
-
+sys.path.append(r"F:\Git\MyScript\tct压测")
 import paramiko
 import os
 from stat import S_ISDIR
@@ -96,11 +94,12 @@ class sshSocket(object):
 
 
 if __name__ == "__main__":
+
     hostname = "192.168.77.90"
     uesrname = "root"
     password = "Meiyisi@123"
     remotePath = r"/random1"
-    localPath = r"G:\Git\MyScript\tct压测\nmon\local_data"
+    localPath = r"F:\Git\MyScript\tct压测\nmon\local_data"
     ssh = sshSocket(hostname=hostname, username=uesrname, password=password)
     files = ssh.get_all_file(remotePath, remotePath, [])
     ssh.download_file(files, localPath, remotePath)
