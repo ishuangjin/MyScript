@@ -6,10 +6,11 @@
 @QQ: 1525053461
 @Mail: ishuangjin@foxmail.com
 @Date: 2023-02-09 16:04:01
-@LastEditTime: 2023-02-10 18:13:36
+@LastEditTime: 2023-02-13 13:41:12
 @FilePath: \\Github\\MyScript\\baidu翻译api\\mods\\Baidu_Text_transAPI.py
 @Copyright (c) 2023 by ${git_name}, All Rights Reserved.
-@Description:
+@Description:1. 通过调用百度翻译api实现：输入中文，翻译成英语/繁体/俄语并输出
+
 '''
 # -*- coding: utf-8 -*-
 
@@ -22,13 +23,24 @@ import requests
 import random
 # import json
 from hashlib import md5
-import ReadConfig
+import os
+import sys
+now_path = os.path.dirname(os.path.abspath(__file__))
+main_path = os.path.join(now_path, "../")
+sys.path.insert(0, main_path)
+
+from config import env_init
+# import ReadConfig
+
+
+ini_path = env_init.ini_path
+parser_dict = env_init.parser_dict
+# parser_dict = Config.ConfigParser(ini_path)
+# print(parser_dict)
 
 
 class DoTranslate():
-
     # Set your own appid/appkey.
-    parser_dict = ReadConfig.get_all_parser()
     appid = parser_dict['appid']
     appkey = parser_dict['appkey']
 
@@ -66,6 +78,7 @@ class DoTranslate():
 
 
 if __name__ == "__main__":
+    ini_path = r'D:\Github\MyScript\baidu翻译api\config\config.ini'
     from_lang = 'en'
     to_lang = 'zh'
     # query = 'Hello World! This is 1st paragraph.\nThis is 2nd paragraph.'
