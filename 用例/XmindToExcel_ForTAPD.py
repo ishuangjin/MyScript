@@ -6,8 +6,8 @@
 @QQ: 1525053461
 @Mail: ishuangjin@foxmail.com
 @Date: 2022-08-08 11:06:56
-@LastEditTime: 2022-09-21 17:18:13
-@FilePath: \\Github\\MyScript\\读取xmind\\main.py
+@LastEditTime: 2023-02-21 16:57:41
+@FilePath: \\Github\\MyScript\\用例\\XmindToExcel_ForTAPD.py
 @Description: 将Xmind测试用例转化为需要的Excel格式
 @Copyright (c) 2022 by ishuangjin, All Rights Reserved.
 '''
@@ -23,27 +23,53 @@ def get_data(xm):  # 提取所有用例数据
     case_step = []
     case_result = []
     case_front = []
+    case_other = []
 
     def get_case_name(xm):
         global get_case_name_for
+        writeTo = 0
         for i in range(len(xm)):
             get_case_name_for = True
             if xm[i].__contains__('topics'):  # 带topics标签意味着有子标题，递归执行方法
                 case_name.append(xm[i]['title'])
                 get_case_name(xm[i]['topics'])
             else:  # 不带topics意味着无子标题，此级别既是用例详情
-                if xm[i]['title'][:2] == "前置":
-                    case_front.append((xm[i]['title'][2:].strip()))
-                elif xm[i]['title'][:2] == "步骤":
-                    case_step.append((xm[i]['title'][2:].strip()))
-                elif xm[i]['title'][:2] == "结果":
-                    case_result.append((xm[i]['title'][2:].strip()))
+                print(xm)
+                print(type(xm))
+                # if xm[i]['title'][:2] == "前置":
+                #     case_front.append((xm[i]['title'][2:].strip()))
+                # elif xm[i]['title'][:2] == "步骤":
+                #     case_step.append((xm[i]['title'][2:].strip()))
+                # elif xm[i]['title'][:2] == "结果":
+                #     case_result.append((xm[i]['title'][2:].strip()))
+                if len(xm) == 1:  # 如果只有一条则全部填充'/'
+                    # case_front.append("/")
+                    # case_step.append("/")
+                    # case_result.append("/")
+                    case_other.append(xm[0]['title'])
+                elif len(xm) == 2:  # 如果有两条则依次填入步骤、结果
+                    writeTo += 1
+                    if writeTo % 2:
+                        continue
+                    else:
+                        case_front.append("/")
+                        case_step.append(xm[0]['title'])
+                        case_result.append(xm[1]['title'])
+                elif len(xm) == 3:  # 如果有三条则依次填入前置、步骤、结果
+                    writeTo += 1
+                    if writeTo % 3:
+                        continue
+                    else:
+                        case_front.append(xm[0]['title'])
+                        case_step.append(xm[1]['title'])
+                        case_result.append(xm[2]['title'])
 
-        case_name_str = "_".join(case_name)  # 转化成字符串
+        case_name_str = "-".join(case_name)  # 转化成字符串
+        # print(case_name_str)
         if get_case_name_for:
             case_list.append(case_name_str)
-            if len(xm) == 2:  # 如果只有步骤和结果则给前置填充'/'
-                case_front.append("/")
+        #     if len(xm) == 2:  # 如果只有步骤和结果则给前置填充'/'
+        #         case_front.append("/")
         try:
             case_name.pop()
             get_case_name_for = False
@@ -54,6 +80,11 @@ def get_data(xm):  # 提取所有用例数据
     get_case_name(xm)
     case_count = len(case_list)
     # 返回用例数量，用例列表，前置条件列表，用例步骤列表，用例结果列表
+    print(case_count)
+    print(len(case_list))
+    print(len(case_front))
+    print(len(case_step))
+    print(len(case_result))
     return case_count, case_list, case_front, case_step, case_result
 
 
@@ -104,7 +135,7 @@ def save_data(xm,
     case_data = get_data_value(data_value_list)
     try:
         df = pd.DataFrame(case_data, columns=row0)
-        print(df.loc[:, "用例名称"], "\n-------------------------\n")
+        # print(df.loc[:, "用例名称"], "\n-------------------------\n")
         df.to_excel(file_name, index=None, sheet_name="Sheet1")  # 保存成excel格式
         # print(df)
     except ValueError:  # 如果报这个错，可能是用例详情缺少，表的数据长度不一致，不能转成DataFrame格式
@@ -133,8 +164,8 @@ def run(xm_file_name, demand_id):
 
 def main():
     # 填写需求ID和xmind文件名
-    demand_id = "1024593"  # 需求ID
-    xm_file_name = "TSF1.29.2to1.29.5组件升级测试用例.xmind"  # 要操作的文件
+    demand_id = "/"  # 需求ID
+    xm_file_name = "科园核销测试用例 - 副本.xmind"  # 要操作的文件
     run(xm_file_name, demand_id)
 
 
