@@ -6,7 +6,7 @@
 @QQ: 1525053461
 @Mail: ishuangjin@foxmail.com
 @Date: 2022-08-08 11:06:56
-@LastEditTime: 2023-02-21 16:57:41
+@LastEditTime: 2023-02-22 16:28:01
 @FilePath: \\Github\\MyScript\\用例\\XmindToExcel_ForTAPD.py
 @Description: 将Xmind测试用例转化为需要的Excel格式
 @Copyright (c) 2022 by ishuangjin, All Rights Reserved.
@@ -23,7 +23,8 @@ def get_data(xm):  # 提取所有用例数据
     case_step = []
     case_result = []
     case_front = []
-    case_other = []
+
+    # case_other = []
 
     def get_case_name(xm):
         global get_case_name_for
@@ -34,21 +35,8 @@ def get_data(xm):  # 提取所有用例数据
                 case_name.append(xm[i]['title'])
                 get_case_name(xm[i]['topics'])
             else:  # 不带topics意味着无子标题，此级别既是用例详情
-                print(xm)
-                print(type(xm))
-                # if xm[i]['title'][:2] == "前置":
-                #     case_front.append((xm[i]['title'][2:].strip()))
-                # elif xm[i]['title'][:2] == "步骤":
-                #     case_step.append((xm[i]['title'][2:].strip()))
-                # elif xm[i]['title'][:2] == "结果":
-                #     case_result.append((xm[i]['title'][2:].strip()))
-                if len(xm) == 1:  # 如果只有一条则全部填充'/'
-                    # case_front.append("/")
-                    # case_step.append("/")
-                    # case_result.append("/")
-                    case_other.append(xm[0]['title'])
-                elif len(xm) == 2:  # 如果有两条则依次填入步骤、结果
-                    writeTo += 1
+                writeTo += 1
+                if len(xm) == 2:  # 如果有两条则依次填入步骤、结果
                     if writeTo % 2:
                         continue
                     else:
@@ -56,7 +44,6 @@ def get_data(xm):  # 提取所有用例数据
                         case_step.append(xm[0]['title'])
                         case_result.append(xm[1]['title'])
                 elif len(xm) == 3:  # 如果有三条则依次填入前置、步骤、结果
-                    writeTo += 1
                     if writeTo % 3:
                         continue
                     else:
@@ -68,45 +55,29 @@ def get_data(xm):  # 提取所有用例数据
         # print(case_name_str)
         if get_case_name_for:
             case_list.append(case_name_str)
-        #     if len(xm) == 2:  # 如果只有步骤和结果则给前置填充'/'
-        #         case_front.append("/")
         try:
             case_name.pop()
             get_case_name_for = False
         except IndexError:
-            print("已获取全部用例名称和用例详情")
+            print("已获取全部用例名称和用例详情，共 {} 条测试用例\n".format(len(case_list)))
 
-    # xm = xmind_to_dict("项目名称.xmind")[0]['topic']['topics']  # 读取xmind文件
     get_case_name(xm)
-    case_count = len(case_list)
     # 返回用例数量，用例列表，前置条件列表，用例步骤列表，用例结果列表
-    print(case_count)
-    print(len(case_list))
-    print(len(case_front))
-    print(len(case_step))
-    print(len(case_result))
-    return case_count, case_list, case_front, case_step, case_result
+    # print(len(case_list))
+    # print(len(case_front))
+    # print(len(case_step))
+    # print(len(case_result))
+    return len(case_list), case_list, case_front, case_step, case_result
 
 
 def save_data(xm,
               file_name="path_to_file.xlsx",
               case_index="",
-              demand_id="请填写需求ID",
+              demand_id="",
               case_type="功能测试",
               case_state="正常",
               case_level="中",
               case_creater="黄金") -> None:
-    """
-    “用例目录”请填写完整路径，用“-”分隔。如果目录为空，默认导入为“未规划目录”中；如果用例目录不存在，请在预览页面选择是否要自动创建目录。
-    “用例名称”为必填项。
-    “需求ID”请填写需求ID,多个需求ID以英文;号隔开。需求必须是本项目下的需求。
-    “前置条件”请填写合法文本。
-    “用例步骤”请填写合法文本。
-    “预期结果”请填写合法文本。
-    “用例类型”请填写：功能测试、性能测试、安全性测试、其他。
-    “用例状态”请填写：正常、待更新、已废弃。
-    “用例等级”请填写：高、中、低。
-    """
     row0 = ["用例目录", "用例名称", "需求ID", "前置条件", "用例步骤", "预期结果", "用例类型", "用例状态", "用例等级", "创建人"]  # 表头
     some_cos = get_data(xm)
 
@@ -136,6 +107,7 @@ def save_data(xm,
     try:
         df = pd.DataFrame(case_data, columns=row0)
         # print(df.loc[:, "用例名称"], "\n-------------------------\n")
+        print("开始写入Excel表格...")
         df.to_excel(file_name, index=None, sheet_name="Sheet1")  # 保存成excel格式
         # print(df)
     except ValueError:  # 如果报这个错，可能是用例详情缺少，表的数据长度不一致，不能转成DataFrame格式
@@ -147,27 +119,27 @@ def save_data(xm,
 
 def run(xm_file_name, demand_id):
     # 路径操作
+    print("获取路径...")
     script_path = os.path.dirname(__file__)  # 当前脚本的绝对路径
     xmind_case = os.path.join(script_path, "XmindCase", xm_file_name)
     excel_case = os.path.join(script_path, "ExcelCase", xm_file_name.replace(".xmind", ".xlsx"))
     case_index = xmind_to_dict(xmind_case)[0]['topic']['title']  # case在tapd上的存放路径，取xmind画布的第一个标题
+    print("获取路径成功\n")
 
+    print("开始读取xmind文件...")
     xm = xmind_to_dict(xmind_case)[0]['topic']['topics']  # 读取xmind文件
     try:
         save_data(xm=xm, file_name=excel_case, case_index=case_index, demand_id=demand_id)
-        print("转化后的文件路径为:", excel_case)
+        if os.path.exists(excel_case):
+            print("转化后的文件路径为:", excel_case)
     except PermissionError:
         print("Error:文件被占用,请关闭已打开的xlsx文件")
     else:
         pass
 
 
-def main():
+if __name__ == '__main__':
     # 填写需求ID和xmind文件名
     demand_id = "/"  # 需求ID
     xm_file_name = "科园核销测试用例 - 副本.xmind"  # 要操作的文件
     run(xm_file_name, demand_id)
-
-
-if __name__ == '__main__':
-    main()
