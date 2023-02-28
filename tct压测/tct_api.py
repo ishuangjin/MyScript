@@ -132,38 +132,46 @@ def create_random_task(task_start=1, task_end=1, task_name_start="random_task"):
     :return: None
     eg:create_random_task(1, 3),创建任务random_task1、random_task2、random_task3
     """
+    pool = ThreadPoolExecutor(max_workers=10)
+
     for num in range(int(task_start), int(task_end) + 1):
         task_name = task_name_start + str(num)
-        params = {
-            "action": "CreateTask",
-            "serviceType": "tct",
-            "regionId": 1,
-            "data": {
-                "Version": "2018-03-26",
-                "TaskName": task_name,
-                "GroupId": "group-6yog6evl",
-                "TaskType": "java",
-                "TaskContent": "com.tencent.cloud.task.spring.SimpleSpringBeanLogTask",
-                "ExecuteType": "unicast",
-                "TimeOut": 900000,
-                "SuccessOperator": "GTE",
-                "SuccessRatio": 80,
-                "TaskRule": {
-                    "RuleType": "Cron",
-                    "Expression": "0 0/5 * * * ?"
-                },
-                "ShardArguments": [],
-                "TaskArgument": "",
-                "RetryCount": 0,
-                "RetryInterval": 0,
-                "AdvanceSettings": {
-                    "SubTaskConcurrency": 2
-                }
+        # 向线程池提交一个task
+        pool.submit(do_create_random_task, task_name)
+
+
+def do_create_random_task(task_name):
+    params = {
+        "action": "CreateTask",
+        "serviceType": "tct",
+        "regionId": 1,
+        "data": {
+            "Version": "2018-03-26",
+            "TaskName": task_name,
+            "GroupId": "group-6yog6evl",
+            "TaskType": "java",
+            "TaskContent": "com.tencent.cloud.task.spring.SimpleSpringBeanLogTask",
+            "ExecuteType": "unicast",
+            "TimeOut": 900000,
+            "SuccessOperator": "GTE",
+            "SuccessRatio": 80,
+            "TaskRule": {
+                "RuleType": "Cron",
+                "Expression": "0 0/5 * * * ?"
+            },
+            "ShardArguments": [],
+            "TaskArgument": "",
+            "RetryCount": 0,
+            "RetryInterval": 0,
+            "AdvanceSettings": {
+                "SubTaskConcurrency": 2
             }
         }
-        resp = api_post(action="DescribeReleasedConfig", params=params)
-        print("正在创建随机任务：", task_name)
-        print(resp)
+    }
+    resp = api_post(action="DescribeReleasedConfig", params=params)
+    print("正在创建随机任务：", task_name)
+    print(resp)
+    print(threading.current_thread().name)
 
 
 def create_shard_task(task_start=1, task_end=100, task_name_start="shard_task"):
@@ -174,53 +182,59 @@ def create_shard_task(task_start=1, task_end=100, task_name_start="shard_task"):
     :param task_end:任务名字结束
     :return:None
     """
+    pool = ThreadPoolExecutor(max_workers=10)
 
     for num in range(int(task_start), int(task_end) + 1):
         task_name = task_name_start + str(num)
-        params = {
-            "action": "CreateTask",
-            "serviceType": "tct",
-            "regionId": 1,
-            "data": {
-                "Version": "2018-03-26",
-                "TaskName": task_name,
-                "GroupId": "group-6yog6evl",
-                "TaskType": "java",
-                "TaskContent": "com.tencent.cloud.task.SimpleShardExecutableTask" + str(random.randint(1, 30)),
-                "ExecuteType": "shard",
-                "TimeOut": 300000,
-                "SuccessOperator": "GTE",
-                "SuccessRatio": 100,
-                "TaskRule": {
-                    "RuleType": "Cron",
-                    "Expression": "0 0/5 * * * ?"
-                },
-                # "ShardArguments": [{
-                #     "ShardKey": 1,
-                #     "ShardValue": "a"
-                # }, {
-                #     "ShardKey": 2,
-                #     "ShardValue": "b"
-                # }, {
-                #     "ShardKey": 3,
-                #     "ShardValue": "c"
-                # }],
-                "ShardArguments": [],
-                "TaskArgument": "",
-                "ProgramIdList": [],
-                "RetryCount": 0,
-                "RetryInterval": 0,
-                "ShardCount": random.randint(10, 30),
-                # "ShardCount": 20,
-                "AdvanceSettings": {
-                    "SubTaskConcurrency": 100
-                }
+        pool.submit(do_create_shard_task, task_name)
+
+
+def do_create_shard_task(task_name):
+    params = {
+        "action": "CreateTask",
+        "serviceType": "tct",
+        "regionId": 1,
+        "data": {
+            "Version": "2018-03-26",
+            "TaskName": task_name,
+            "GroupId": "group-6yog6evl",
+            "TaskType": "java",
+            "TaskContent": "com.tencent.cloud.task.SimpleShardExecutableTask" + str(random.randint(1, 30)),
+            "ExecuteType": "shard",
+            "TimeOut": 300000,
+            "SuccessOperator": "GTE",
+            "SuccessRatio": 100,
+            "TaskRule": {
+                "RuleType": "Cron",
+                "Expression": "0 0/5 * * * ?"
+            },
+            # "ShardArguments": [{
+            #     "ShardKey": 1,
+            #     "ShardValue": "a"
+            # }, {
+            #     "ShardKey": 2,
+            #     "ShardValue": "b"
+            # }, {
+            #     "ShardKey": 3,
+            #     "ShardValue": "c"
+            # }],
+            "ShardArguments": [],
+            "TaskArgument": "",
+            "ProgramIdList": [],
+            "RetryCount": 0,
+            "RetryInterval": 0,
+            "ShardCount": random.randint(10, 30),
+            # "ShardCount": 20,
+            "AdvanceSettings": {
+                "SubTaskConcurrency": 100
             }
         }
+    }
 
-        resp = api_post(action="DescribeReleasedConfig", params=params)
-        print("正在创建分片任务：", task_name)
-        print(resp)
+    resp = api_post(action="DescribeReleasedConfig", params=params)
+    print("正在创建分片任务：", task_name)
+    print(resp)
+    print(threading.current_thread().name)
 
 
 def alter_task(func, task_start=0, task_count=None):
@@ -252,7 +266,7 @@ def alter_task(func, task_start=0, task_count=None):
     task_tuple = get_task_id_name(sql)
 
     # 创建一个包含20条线程的线程池
-    pool = ThreadPoolExecutor(max_workers=20)
+    pool = ThreadPoolExecutor(max_workers=10)
 
     for task_id_tuple in task_tuple:
         # 向线程池提交一个task
@@ -260,8 +274,7 @@ def alter_task(func, task_start=0, task_count=None):
 
 
 def do_alter_task(func, task_id_tuple):
-    task_id = task_id_tuple[0]
-    task_name = task_id_tuple[1]
+    task_id, task_name = task_id_tuple
     print(task_id)
     params = {"action": func, "serviceType": "tct", "regionId": 1, "data": {"Version": "2018-03-26", "TaskId": task_id}}
     resp = api_post(action="DescribeReleasedConfig", params=params)
@@ -441,16 +454,16 @@ def create_task_flow(task_start=0, task_count=0, limit=20, flow_name_start="flow
 def main():
 
     # 创建随机任务 random_task1、random_task2、...random_task100
-    # create_random_task(1, 10000)
+    create_random_task(13000, 14000)
 
     # 创建分片任务 shard_task1、shard_task2、...shard_task100
     # create_shard_task(1, 10000)
 
-    # DisableTask 停用任务，EnableTask 启用任务，DeleteTask 删除任务
+    # DisableTask 停用任务，EnableTask 启用任务，DeleteTask 删除任务——单选多进程修改
     # 改变第1条数据起，一共100条数据的状态为启用
     # alter_task("EnableTask", 0, 1)
 
-    # DisableMultipleTask 停用任务，EnableMultipleTask 启用任务，DeleteMultipleTask 删除任务
+    # DisableMultipleTask 停用任务，EnableMultipleTask 启用任务，DeleteMultipleTask 删除任务——多选任务修改状态
     # 改变第1条数据起，一共100条数据的状态为启用
     # alter_multi_task("EnableMultipleTask", 0, 1)
 
