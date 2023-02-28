@@ -42,7 +42,7 @@ def get_sign_heades(action, params):
     # ************* 步骤 1：拼接规范请求串 *************
     http_request_method = "POST"
     canonical_uri = "/"
-    canonical_querystring = "action=" + action
+    canonical_querystring = ""
     ct = "application/json; charset=utf-8"
     payload = json.dumps(params)
     canonical_headers = "content-type:%s\nhost:%s\n" % (ct, host)
@@ -210,8 +210,8 @@ def create_shard_task(task_start=1, task_end=100, task_name_start="shard_task"):
                 "ProgramIdList": [],
                 "RetryCount": 0,
                 "RetryInterval": 0,
-                # "ShardCount": random.randint(10, 30),
-                "ShardCount": 20,
+                "ShardCount": random.randint(10, 30),
+                # "ShardCount": 20,
                 "AdvanceSettings": {
                     "SubTaskConcurrency": 100
                 }
@@ -441,14 +441,14 @@ def create_task_flow(task_start=0, task_count=0, limit=20, flow_name_start="flow
 def main():
 
     # 创建随机任务 random_task1、random_task2、...random_task100
-    # create_random_task(1, 100)
+    # create_random_task(1, 10000)
 
     # 创建分片任务 shard_task1、shard_task2、...shard_task100
-    # create_shard_task(9001, 10000)
+    # create_shard_task(1, 10000)
 
     # DisableTask 停用任务，EnableTask 启用任务，DeleteTask 删除任务
     # 改变第1条数据起，一共100条数据的状态为启用
-    alter_task("EnableTask", 0, 1)
+    # alter_task("EnableTask", 0, 1)
 
     # DisableMultipleTask 停用任务，EnableMultipleTask 启用任务，DeleteMultipleTask 删除任务
     # 改变第1条数据起，一共100条数据的状态为启用
