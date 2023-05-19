@@ -6,15 +6,17 @@
 @QQ: 1525053461
 @Mail: ishuangjin@foxmail.com
 @Date: 2022-12-15 17:32:50
-@LastEditTime: 2023-01-03 17:31:19
+@LastEditTime: 2023-03-15 10:57:24
 @FilePath: \\Github\\MyScript\\tct压测\\control_tct\\run.py
 @Copyright (c) 2022 by ishuangjin, All Rights Reserved.
 @Description:
 '''
+import sys
 from model.FlowControl import *
 from model.TaskControl import create_random_task, create_shard_task, alter_task, alter_multi_task
 import argparse
 
+print(sys.modules)
 parser = argparse.ArgumentParser(description='TCT任务控制台')
 # 给这个解析对象添加命令行参数
 parser.add_argument('type', type=str, help='类型：任务/工作流')

@@ -1,10 +1,23 @@
+import multiprocessing
 
-for task_id_tuple in task_tuple:
-    task_id_value = task_id_tuple[0]
-    task_name = task_id_tuple[1]
-    task_id_list = [str(task_id_value)]
-    print(task_id_list)
-    # params = {"action": func, "serviceType": "tsf", "regionId": 1, "data": {"Version": "2018-03-26", "Ids": task_id_list}}
-    # resp = api_post(action="DescribeReleasedConfig", params=params)
-    # print("正在{}任务：{}".format(func, task_name))
-    # print(resp)
+
+def worker(num):
+    """Returns the string of interest"""
+    return "worker %d" % num
+
+
+def main():
+
+    pool = multiprocessing.Pool(4)
+    results = pool.map(worker, range(10))
+    pool.close()
+    pool.join()
+
+    for result in results:
+    # prints the result string in the main process
+        print(result)
+
+
+if __name__ == '__main__':
+# Better protect your main function when you use multiprocessing
+    main()

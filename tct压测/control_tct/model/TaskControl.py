@@ -18,6 +18,14 @@ from model.GetSql import get_task_id_name
 import threading
 
 
+def multi_do(max_workers, sequence, func, task_name_start):
+    pool = ThreadPoolExecutor(max_workers=max_workers)
+    for _ in sequence:
+        task_name = task_name_start + str(_)
+        # 向线程池提交一个task
+        pool.submit(func, task_name)
+
+
 def create_random_task(task_start=1, task_end=1, task_name_start="random_task"):
     """
     创建执行方式为随机的任务
